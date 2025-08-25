@@ -47,15 +47,15 @@
         background-position: center;
         background-repeat: no-repeat;
     }
-    .section:nth-child(2) { background-image: url(images/section2bg.png); 
+    .section:nth-child(2) { background-color: #efbf04; }
+    .section:nth-child(3) { background-color: #efbf04; }
+    .section:nth-child(4) { background-color: #efbf04; }
+    .section:nth-child(5) { background-color: #efbf04}
+    .section:nth-child(6) { background-image: url(images/section2bg.png); 
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
     }
-    .section:nth-child(3) { background-color: #efbf04; }
-    .section:nth-child(4) { background-color: #efbf04; }
-    .section:nth-child(5) { background-color: #efbf04}
-    .section:nth-child(6) { background-color: #efbf04}
     .section:nth-child(7) { background-color: #efbf04;}
 
 
