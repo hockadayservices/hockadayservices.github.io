@@ -42,8 +42,16 @@
 
 
 
-    .section:nth-child(1) { background-image: url(images/section1bg.png); }
-    .section:nth-child(2) { background-image: url(images/section2bg.png); }
+    .section:nth-child(1) { background-image: url(images/section1bg.png); 
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .section:nth-child(2) { background-image: url(images/section2bg.png); 
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
     .section:nth-child(3) { background-color: #efbf04; }
     .section:nth-child(4) { background-color: #efbf04; }
     .section:nth-child(5) { background-color: #efbf04}
@@ -112,7 +120,7 @@
     }
 
     h1 {
-        font-size: 3rem;
+        font-size: 4rem;
         line-height: 1.4em;
         font-family: "Londrina Shadow", cursive;
     }
@@ -182,7 +190,7 @@
     justify-content: flex-start; /* stack header + grid from top */
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     box-sizing: border-box;
     overflow-y: auto;             /* vertical scroll if content exceeds section height */
     scroll-snap-align: start;
@@ -195,7 +203,8 @@
     grid-template-rows: repeat(2, auto);   /* 2 rows, auto-height to fit content */
     gap: 20px;
     width: min(1200px, 100%);
-    margin: 0 auto;
+    margin-top: auto;
+    margin-bottom: auto;
     }
 
     #education-experience .card {
@@ -269,6 +278,8 @@
         gap: 20px;                /* space between cards */
         width: 100%;              /* full width of section */
         box-sizing: border-box;
+        margin-top: auto;
+        margin-bottom: auto;
     }
 
 
@@ -350,7 +361,7 @@
 }
 
 #portfolio-section .card-list .card-item p {
-    font-size: 1rem;       /* desired font size */
+    font-size: 1.2rem;       /* desired font size */
     font-weight: 300;
     line-height: 1.4;
     color: #aaaaaa;
@@ -375,7 +386,7 @@
 #portfolio-section .badge {
     display: inline-block;
     padding: 8px 12px;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     font-weight: 500;
     border-radius: 50px;
     background: #000;        /* default background */
@@ -400,14 +411,14 @@
 }
 
     #portfolio-section .card-list .card-link .card-title {
-        font-size: 1.19rem;
+        font-size: 1.6rem;
         color: #fff;
         font-weight: 600;
     }
 
     #portfolio-section .card-list .card-link .card-button {
-        height: 35px;
-        width: 35px;
+        height: 3em;
+        width: 3em;
         color: #efbf04;
         border-radius: 50%;
         margin: 1em 0 1em;
@@ -433,18 +444,15 @@
     }
 
     #services-section .card-wrapper {
+        display: flex;
         align-items: flex-start;   /* aligns content to the left */
         justify-content: flex-start; /* ensures horizontal layout starts at left */
         width: 100%;
-    }
-
-    #services .card-wrapper {
-        display: flex;
-        justify-content: flex-start;  /* center the card horizontally */
-        flex-wrap: wrap;          /* allow multiple cards to wrap */
-        gap: 20px;                /* space between cards */
-        width: 100%;              /* full width of section */
+        margin-top: auto;
+        margin-bottom: auto;
         box-sizing: border-box;
+        gap: 20px;                /* space between cards */
+        flex-wrap: wrap;          /* allow multiple cards to wrap */
     }
 
 
@@ -482,15 +490,17 @@
     }
 
     #services-section .card-list .card-item p {
-        font-size: 1rem; /* or whatever size fits */
+        font-size: 1.6rem; /* or whatever size fits */
         font-weight: 300;
         color: #aaaaaa;
+        padding: 0 0 1em 0;
+        margin: 0 0 0 0;
     }
 
     #services-section .card-list .card-item i {
         font-size: 4rem; /* or whatever size fits */
         margin: 0;
-        padding: .3em 0 .3em 0;
+        padding: .3em 0 0 0;
     }
 
     #services-section .card-list {
@@ -519,22 +529,17 @@
         mask-repeat: no-repeat;
         mask-size: 100% 100%;
         mask-composite: intersect;
-    }
-    }
+        }
+
 
 
         /* Target only h2 inside services section cards */
         #services-section .card-list .card-item h2 {
-            font-size: 1.0rem; /* choose whatever size fits */
-            line-height: 1.3;
-            margin: 0.5em 0;
+        font-size: 2rem; /* choose whatever size fits */
+        line-height: 1.3;
+        margin: 0.5em 0 0.5em 0;
         }
 
-    #services-section .card-list .card-item p {
-        padding: 2em 0 2em 0;
-        margin: 0 0 0 0;
-        font-size: 1rem;
-    }
 
 
 
