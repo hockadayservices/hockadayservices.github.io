@@ -1,0 +1,747 @@
+    /* Reset */
+    html, body {
+    margin: 0 auto 200px auto; /* bigger bottom margin */
+    overflow: hidden;
+    height: 100%;
+    font-family: "Londrina Solid", "Londrina Shadow", cursive;
+    }
+
+    /* Scroll Container */
+    .scroll-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;          
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    }
+
+    .scroll-container::-webkit-scrollbar {
+    display: none;
+    }
+
+    /* Sections */
+    .section {
+    min-width: 100vw;
+    width: 100vw;
+    height: 100vh;          /* force full viewport height */
+    padding-bottom: 200px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    scroll-snap-align: start;
+    font-size: 1rem;
+    color: white;
+    overflow: visible;      /* let container handle horizontal scroll */
+    }
+
+
+
+    .section:nth-child(1) { background-image: url(images/section1bg.png); }
+    .section:nth-child(2) { background-image: url(images/section2bg.png); }
+    .section:nth-child(3) { background-color: #efbf04; }
+    .section:nth-child(4) { background-color: #efbf04; }
+    .section:nth-child(5) { background-color: #efbf04}
+    .section:nth-child(6) { background-color: #efbf04}
+    .section:nth-child(7) { background-color: #efbf04;}
+
+
+    /* Arrow Buttons */
+    .arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    }
+
+    .arrow i {
+    font-size: 2em;
+    color: #000;
+    pointer-events: none;
+    }
+
+    .arrow:focus {
+    outline: none;
+    }
+
+    .arrow:hover {
+    background-color: rgba(0,0,0,0.0);
+    transform: translateY(-50%) scale(1.2);
+    }
+
+    .arrow-left { left: 10px; }
+    .arrow-right { right: 10px; }
+
+    /* Dots Navigation */
+    .dots {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+    }
+
+    .dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
+    }
+
+    .dot.active {
+    background-color: white;
+    }
+
+    h1 {
+        font-size: 3rem;
+        line-height: 1.4em;
+        font-family: "Londrina Shadow", cursive;
+    }
+
+    #mission-values.section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* stack header + grid from top */
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;             /* vertical scroll if content exceeds section height */
+    scroll-snap-align: start;
+    color: white;
+    }
+
+    #mission-values .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 3 columns */
+    grid-template-rows: repeat(2, auto);   /* 2 rows, auto-height to fit content */
+    gap: 20px;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    }
+
+    #mission-values .card {
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 15px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    }
+
+    #mission-values .card h2 {
+    margin-top: 0;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    }
+
+    #mission-values .card p {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    font-style: light;
+    font-weight: 300;
+    color: #aaaaaa;
+    }
+
+    #mission-values .card ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+    }
+
+    #mission-values .card li {
+    margin-bottom: 6px;
+    font-size: 0.4em;
+    line-height: 1.5em;
+    }
+
+    #education-experience.section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* stack header + grid from top */
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;             /* vertical scroll if content exceeds section height */
+    scroll-snap-align: start;
+    color: white;
+    }
+
+    #education-experience .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(2, auto);   /* 2 rows, auto-height to fit content */
+    gap: 20px;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    }
+
+    #education-experience .card {
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 15px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    }
+
+    #education-experience .card h2 {
+    margin-top: 0;
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+    }
+
+    #education-experience .card h2 span {
+    font-size: .9em;
+    }
+
+    #education-experience .card p {
+    margin: 0 0 10px;
+    font-size: 1.6rem;
+    font-style: italic;
+    }
+
+    #education-experience .card ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+    }
+
+    #education-experience .card li {
+    margin-bottom: 6px;
+    font-size: 1.4rem;
+    font-weight: 300;
+    line-height: 1.5em;
+    color: #aaaaaa;
+    }
+
+    #education-experience a {
+    text-decoration: none;   /* removes underline */
+    color: inherit;          /* keeps the link the same color as surrounding text */
+    transition: color 0.3s ease; /* optional: smooth color change on hover */
+    }
+
+    /* Optional: style hover state differently */
+    #education-experience .card a:hover {
+    color: #efbf04; /* or any color you like */
+    text-decoration: none; /* ensures no underline on hover */
+}
+
+    /* Portfolio */
+
+    #portfolio-section {
+        position: relative;
+    }
+
+    #portfolio-section .card-wrapper {
+        align-items: flex-start;   /* aligns content to the left */
+        justify-content: flex-start; /* ensures horizontal layout starts at left */
+        width: 100%;
+    }
+
+    #portfolio-section .card-wrapper {
+        display: flex;
+        justify-content: flex-start;  /* center the card horizontally */
+        flex-wrap: wrap;          /* allow multiple cards to wrap */
+        gap: 20px;                /* space between cards */
+        width: 100%;              /* full width of section */
+        box-sizing: border-box;
+    }
+
+
+    #portfolio-section .card-list-wrapper {
+        position: relative; /* for overlay positioning */
+        overflow: hidden;   /* hide overflow to only show gradient edges */
+        padding: 0 1em; /* optional inner spacing */
+    }
+
+    #portfolio-section .card-list {
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: none;
+    scroll-behavior: smooth;
+
+    /* Add horizontal padding equal to half the viewport minus half a card width */
+    padding-left: calc(50vw - 200px); /* 200px is half card width */
+    padding-right: calc(50vw - 200px);
+
+    /* fade edges of the cards */
+    -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-composite: destination-in;
+
+    mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    mask-composite: intersect;
+    }
+
+    #portfolio-section .card-list::-webkit-scrollbar {
+        display: none;           /* Chrome, Safari, Opera */
+    }
+
+    #portfolio-section .card-list .card-item {
+        flex: 0 0 auto; /* don't shrink */
+        scroll-snap-align: center;     /* snap to center */
+        list-style: none;
+        padding: 0;
+    }
+
+    #portfolio-section .card-list .card-item .card-link {
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* vertical centering */
+        align-items: center;     /* horizontal centering */
+        text-align: center;      /* make multi-line text center too */
+        color: #000;
+        background: rgba(0, 0, 0, 0.65);
+        padding: .3em;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 2px solid transparent;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+        transition: .2s ease;
+    }
+
+    #portfolio-section .card-list .card-item .card-link:hover {
+        border-color: #000;
+    }
+
+#portfolio-section .card-list .card-link .card-image {
+    width: auto;          /* let image keep natural width */
+    height: auto;         /* let image keep natural height */
+    max-width: 100%;      /* don’t exceed card width */
+    max-height: 300px;    /* optional: limit height */
+    object-fit: contain;  /* maintain aspect ratio */
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+    display: block;       /* remove inline spacing */
+    margin: 0 auto;       /* center image horizontally */
+}
+
+#portfolio-section .card-list .card-item p {
+    font-size: 1rem;       /* desired font size */
+    font-weight: 300;
+    line-height: 1.4;
+    color: #aaaaaa;
+    font-family: "Londrina Solid", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+    #portfolio-section .card-list .card-item h2 {
+        padding: 0 0 0 0;
+        margin: .8em 0 .8em 0;
+    }
+
+#portfolio-section .badges {
+    display: flex;           /* row layout */
+    gap: 8px;                /* spacing between badges */
+    flex-wrap: wrap;         /* wrap if needed */
+    justify-content: center; /* center badges horizontally */
+    padding: 1.2em 0 0 0;   /* top padding */
+}
+
+#portfolio-section .badge {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 50px;
+    background: #000;        /* default background */
+    color: #fff;             /* default text color */
+    white-space: nowrap;
+}
+
+/* Role-based colors: change background, not text */
+#portfolio-section .badge.writer {
+    background-color: #ff0000; /* red */
+    color: #fff;               /* optional, ensure contrast */
+}
+
+#portfolio-section .badge.student-advocate {
+    background-color: #efbf04; /* yellow */
+    color: #000;               /* contrast for readability */
+}
+
+#portfolio-section .badge.teacher {
+    background-color: #0a84ff; /* blue */
+    color: #fff;               /* contrast */
+}
+
+    #portfolio-section .card-list .card-link .card-title {
+        font-size: 1.19rem;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    #portfolio-section .card-list .card-link .card-button {
+        height: 35px;
+        width: 35px;
+        color: #efbf04;
+        border-radius: 50%;
+        margin: 1em 0 1em;
+        background: none;
+        cursor: pointer;
+        border: 2px solid #efbf04;
+    }
+
+    #portfolio-section .card-list .card-link:hover .card-button {
+        color: #fff;
+        background: #efbf04;
+        transform: rotate(-45deg);
+        transition: transform 1s ease;
+    }
+
+
+
+
+    /* Services */
+
+    #services-section {
+        position: relative;
+    }
+
+    #services-section .card-wrapper {
+        align-items: flex-start;   /* aligns content to the left */
+        justify-content: flex-start; /* ensures horizontal layout starts at left */
+        width: 100%;
+    }
+
+    #services .card-wrapper {
+        display: flex;
+        justify-content: flex-start;  /* center the card horizontally */
+        flex-wrap: wrap;          /* allow multiple cards to wrap */
+        gap: 20px;                /* space between cards */
+        width: 100%;              /* full width of section */
+        box-sizing: border-box;
+    }
+
+
+    #services .card-list-wrapper {
+        position: relative; /* for overlay positioning */
+        overflow: hidden;   /* hide overflow to only show gradient edges */
+        padding: 0 1em; /* optional inner spacing */
+    }
+
+
+
+    #services-section .card-list::-webkit-scrollbar {
+        display: none;           /* Chrome, Safari, Opera */
+    }
+
+    #services-section .card-list .card-item {
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* vertical centering */
+        align-items: center;     /* horizontal centering */
+        text-align: center;      /* make multi-line text center too */
+        color: #fff;
+        background: rgba(0, 0, 0, 0.65);
+        padding: .3em;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+        transition: .2s ease;
+        flex: 0 0 auto;          /* prevent shrinking in horizontal scroll */
+    }
+
+    #services-section .card-list .card-item:hover {
+        border-color: #000;
+    }
+
+    #services-section .card-list .card-item p {
+        font-size: 1rem; /* or whatever size fits */
+        font-weight: 300;
+        color: #aaaaaa;
+    }
+
+    #services-section .card-list .card-item i {
+        font-size: 4rem; /* or whatever size fits */
+        margin: 0;
+        padding: .3em 0 .3em 0;
+    }
+
+    #services-section .card-list {
+        display: flex;
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        padding-left: calc(50vw - 200px);
+        padding-right: calc(50vw - 200px);
+
+        /* Add horizontal padding equal to half the viewport minus half a card width */
+        padding-left: calc(50vw - 200px); /* 200px is half card width */
+        padding-right: calc(50vw - 200px);
+
+        /* fade edges of the cards */
+        -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        -webkit-mask-composite: destination-in;
+
+        mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+        mask-repeat: no-repeat;
+        mask-size: 100% 100%;
+        mask-composite: intersect;
+    }
+    }
+
+
+        /* Target only h2 inside services section cards */
+        #services-section .card-list .card-item h2 {
+            font-size: 1.0rem; /* choose whatever size fits */
+            line-height: 1.3;
+            margin: 0.5em 0;
+        }
+
+    #services-section .card-list .card-item p {
+        padding: 2em 0 2em 0;
+        margin: 0 0 0 0;
+        font-size: 1rem;
+    }
+
+
+
+
+
+    /* What they say about teacher hock */
+    .comment-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr; /* column ratio: 2–1–2 */
+    grid-template-rows: 2fr 1fr 2fr;    /* row ratio: 2–1–2 */
+    gap: 20px; /* spacing between cells */
+    min-height: 60vh;
+    height: auto;
+    padding-bottom: 20vh;
+    box-sizing: border-box;
+    }
+
+    .comment-grid p {
+        font-size: 1.2rem;
+        font-weight: 300;
+    }
+
+    .comment-grid h2 {
+        font-size: 1.6rem;
+    }
+
+    .item {
+    background: color(0 0 0 0);
+    padding: 0;
+    text-align: center;
+    font-size: .7em;
+    }
+
+    .stars {
+    color: rgba(0, 0, 0, 0.65);
+    margin-top: 5px;
+    font-size: 3.5em;
+    }
+
+
+
+
+
+
+
+    /* Container form styling */
+    #contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    max-width: 800px;
+    max-height: fit-content;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    margin: 0 auto 0 auto; /* bigger bottom margin */
+    }
+
+
+    /* Labels */
+    #contact-form label {
+    display: block;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    padding: 1vh;
+    font-size: 3rem;
+    }
+
+    /* Inputs & textarea */
+    #contact-form input,
+    #contact-form textarea {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    }
+
+    #contact-form input:focus,
+    #contact-form textarea:focus {
+    border-color: #efbf04;
+    outline: none;
+    }
+
+    /* Textarea size */
+    #contact-form textarea {
+    resize: vertical;
+    min-height: 120px;
+    }
+
+    /* Response text */
+    #response {
+    text-align: center;
+    margin-top: 15px;
+    }
+
+    /* Button */
+    #contact-form button {
+    background: #fff;
+    color: #000;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin: 2vh auto 2vh auto;
+    }
+
+    #contact-form button:hover {
+    background: #efbf04;
+    }
+
+    /* Spinner styling */
+    .spinner {
+    border: 4px solid #f3f3f3; /* Light gray */
+    border-top: 4px solid #000; /* Black */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    }
+
+    @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+    }
+
+    /* Optional: disable button while spinning */
+    #contact-form button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    }
+
+
+    /* LinkedIn Button only for Contact Me slide */
+    .linkedin-button-container {
+        position: absolute;
+        bottom: 8vh;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        text-align: center;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Visible state */
+    .linkedin-button-container.visible {
+        opacity: 1;
+        pointer-events: auto;
+        animation: rumbleZoomIn 0.8s forwards; /* shake on entrance */
+    }
+
+    /* Rumble + Zoom In animation */
+    @keyframes rumbleZoomIn {
+        0% { transform: translateX(-50%) translateZ(0) rotate(0deg) scale(0.8); }
+        10% { transform: translateX(-52%) translateZ(1px) rotate(-2deg) scale(0.85); }
+        20% { transform: translateX(-48%) translateZ(2px) rotate(2deg) scale(0.88); }
+        30% { transform: translateX(-51%) translateZ(3px) rotate(-1deg) scale(0.9); }
+        40% { transform: translateX(-49%) translateZ(4px) rotate(1deg) scale(0.93); }
+        50% { transform: translateX(-50%) translateZ(5px) rotate(0deg) scale(0.95); }
+        60% { transform: translateX(-51%) translateZ(6px) rotate(-1deg) scale(0.98); }
+        70% { transform: translateX(-49%) translateZ(7px) rotate(1deg) scale(1.0); }
+        80% { transform: translateX(-50%) translateZ(8px) rotate(0deg) scale(1.02); }
+        100% { transform: translateX(-50%) translateZ(10px) rotate(0deg) scale(1.05); }
+    }
+
+    /* Fade-out animation: jump up then drop */
+    @keyframes fadeOutDrop {
+        0% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        30% {
+            transform: translateX(-50%) translateY(-20px);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(200px);
+        }
+    }
+
+    .linkedin-button-container.fade-out {
+        animation: fadeOutDrop 0.6s forwards;
+    }
+
+    /* Button styling */
+    #contact-section .linkedin-button-container .linkedin-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background-color: #0A66C2;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    #contact-section .linkedin-button-container .linkedin-button i {
+        font-size: 1.2rem;
+    }

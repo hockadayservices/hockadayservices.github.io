@@ -1,223 +1,322 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sideways Scrolling Site</title>
-<style>
-/* =========================
-   Basic Reset
-========================= */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* hide default scrollbars */
-  height: 100%;
-  font-family: Arial, sans-serif;
-}
+    <!DOCTYPE html>
+    <html lang="en">
 
-/* =========================
-   Scroll Container
-========================= */
-.scroll-container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hockaday Writing, Tutoring, and Consultation Services</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
 
-  /* Hide scrollbar */
-  scrollbar-width: none; /* Firefox */
-}
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-.scroll-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
 
-/* =========================
-   Sections
-========================= */
-.section {
-  min-width: 100vw;
-  height: 100vh;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 3em;
-  color: white;
-}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&family=Londrina+Sketch&family=Londrina+Solid:wght@100;300;400;900&display=swap" rel="stylesheet">
 
-.section:nth-child(1) { background-color: #ff595e; }
-.section:nth-child(2) { background-color: #1982c4; }
-.section:nth-child(3) { background-color: #6a4c93; }
-.section:nth-child(4) { background-color: #8ac926; }
 
-/* =========================
-   Arrow Buttons
-========================= */
-.arrow {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 3em;
-  color: white;
-  background-color: rgba(0,0,0,0.0);
-  border: none;
-  cursor: pointer;
-  z-index: 100;
-  padding: 0.2em 0.5em;
-  user-select: none;
-}
 
-.arrow:hover {
-  background-color: rgba(0, 0, 0, 0);
-  transform: translateY(-50%) scale(1.2); /* slightly bigger */
-  transition: all 0.3s ease;
-}
+    </head>
 
-.arrow-left { left: 10px; }
-.arrow-right { right: 10px; }
+    <body>
 
-/* =========================
-   Dots Navigation
-========================= */
-.dots {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  z-index: 100;
-}
+    <div class="main-content">
+    <!-- Arrow Buttons -->
+    <button class="arrow arrow-left"><i class="fas fa-circle-left"></i></button>
+    <button class="arrow arrow-right"><i class="fas fa-circle-right"></i></button>
 
-.dot {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: rgba(255,255,255,0.5);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    <!-- Scroll Container -->
+    <div class="scroll-container">
+        <div class="section"></div>
 
-.dot.active {
-  background-color: white;
-}
-</style>
-</head>
-<body>
+        <div id="mission-values" class="section">
+        <h1>Mission & Values</h1>
 
-<button class="arrow arrow-left">
-  <i class="fas fa-chevron-left"></i>
-</button>
-<button class="arrow arrow-right">
-  <i class="fas fa-chevron-right"></i>
-</button>
+        <div class="card-grid">
+            <div class="card">
+                <h2>The Whole of a Person</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut pretium tristique tincidunt. Vivamus maximus lacinia pretium. Suspendisse risus tortor, tristique eget lobortis non, pretium in lectus. Quisque ullamcorper fringilla feugiat. Quisque at maximus enim.</p>
+            </div>
 
-<div class="scroll-container">
-  <div class="section">Section 1</div>
-  <div class="section">Section 2</div>
-  <div class="section">Section 3</div>
-  <div class="section">Section 4</div>
-</div>
+            <div class="card">
+                <h2>Providing a Platform</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut pretium tristique tincidunt. Vivamus maximus lacinia pretium. Suspendisse risus tortor, tristique eget lobortis non, pretium in lectus. Quisque ullamcorper fringilla feugiat. Quisque at maximus enim.</p>
+            </div>
 
-<div class="dots">
-  <div class="dot active" data-index="0"></div>
-  <div class="dot" data-index="1"></div>
-  <div class="dot" data-index="2"></div>
-  <div class="dot" data-index="3"></div>
-</div>
+            <div class="card">
+                <h2>Student Knowledge</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut pretium tristique tincidunt. Vivamus maximus lacinia pretium. Suspendisse risus tortor, tristique eget lobortis non, pretium in lectus. Quisque ullamcorper fringilla feugiat. Quisque at maximus enim.</p>
+            </div>
 
-<script>
-const container = document.querySelector('.scroll-container');
-const sections = document.querySelectorAll('.section');
-const dots = document.querySelectorAll('.dot');
-let currentIndex = 0;
+            <div class="card">
+                <h2>Dad Jokes</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut pretium tristique tincidunt. Vivamus maximus lacinia pretium. Suspendisse risus tortor, tristique eget lobortis non, pretium in lectus. Quisque ullamcorper fringilla feugiat. Quisque at maximus enim.</p>
+            </div>
+        </div>
+        </div>
 
-// Scroll to a specific section
-const scrollToIndex = (index) => {
-  if (index < 0) index = 0;
-  if (index >= sections.length) index = sections.length - 1;
-  currentIndex = index;
-  sections[index].scrollIntoView({ behavior: 'smooth', inline: 'start' });
-  updateDots();
-};
+        <div id="education-experience" class="section">
+        <h1>Education</h1>
 
-// Update active dot
-const updateDots = () => {
-  dots.forEach(dot => dot.classList.remove('active'));
-  dots[currentIndex].classList.add('active');
-};
+        <div class="card-grid">
+            <div class="card">
+                <h2><span>James Bowie High School</span></h2>
+                <p>High School Diploma (2016)</p>
+                <ul>
+                    <br>
+                    <li>Joined wrestling and football...</li>
+                    <li>at a school that is less than 5% APIDA...</li>
+                    <li>and less than 2.5% Black...</li>
+                    <li><a href="https://www.statesman.com/story/news/politics/county/2019/06/20/lawsuit-claims-lack-of-response-to-racist-bullying-at-bowie-high/4864753007/" target="_blank"><i>maybe it will be a welcoming environment?</i></a></li>
+                </ul>
+            </div>
 
-// Arrow button events
-document.querySelector('.arrow-left').addEventListener('click', () => {
-  scrollToIndex(currentIndex - 1);
-});
-document.querySelector('.arrow-right').addEventListener('click', () => {
-  scrollToIndex(currentIndex + 1);
-});
+            <div class="card">
+                <h2>Georgetown University</h2>
+                <p>Bachelor of Arts in<br>
+                English & Black Studies (2020)</p>
+                <ul>
+                    <br>
+                    <li><a href="https://thehoya.com/opinion/viewpoint-ensure-aid-for-struggling-students/" target="_blank"><i>Struggled through my first few years as a low-income, independent student...</i></a></li>
+                    <li>studied abroad at Yonsei University in Seoul, South Korea...</li>
+                    <li><a href="https://english.georgetown.edu/2020-award-winners/" target="_blank"><i>and received the Annabelle Bonner Award.</i></a></li>
+                </ul>
+            </div>
 
-// Mouse wheel scroll → horizontal
-container.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  container.scrollBy({ left: e.deltaY, behavior: 'smooth' });
-}, { passive: false });
+            <div class="card">
+                <h2>American University</h2>
+                <p>Master of Arts in<br>
+                Teaching Secondary ELA (2027)</p>
+                <ul>
+                    <br>
+                    <li>Came in as a City Teaching Alliance resident...</li>
+                    <li>struggled through my first year teaching...</li>
+                </ul>
+            </div>
+        </div>
+        </div>
 
-// Touch drag/swipe support
-let isDown = false;
-let startX;
-let scrollLeftStart;
 
-container.addEventListener('touchstart', (e) => {
-  isDown = true;
-  startX = e.touches[0].pageX;
-  scrollLeftStart = container.scrollLeft;
-});
+        <div class="section" id="portfolio-section">
+            <h1>Portfolio</h1>
+            <div class="card-wrapper">
+                <ul class="card-list">
+                    <li class="card-item">
+                        <a href="https://thehoya.com/opinion/viewpoint-ensure-aid-for-struggling-students/" target="_blank" class="card-link">
+                            <img src="images/editorial.png" alt="INSERT ALT HERE" class="card-image">
+                            <div class="badges">
+                                <span class="badge student-advocate">STUDENT ADVOCATE</span>
+                                <span class="badge writer">WRITER</span>
+                            </div>
+                            <h2 class="card-title">VIEWPOINT: Ensure Aid for Struggling Students</h2>
+                            <p>In the Summer of 2019, I ran away from home after my freshman year at Georgetown University. This article details my endeavor to remain at Georgetown while combatting housing insecurity, PTSD, and starvation.</p>
+                            <button class="card-button">
+                                <i class="fa-solid fa-square-up-right"></i>
+                            </button>
+                        </a>
+                    </li>
+                    <li class="card-item">
+                        <a href="https://english.georgetown.edu/2020-award-winners/" class="card-link">
+                            <img src="images/choke.png" alt="INSERT ALT HERE" class="card-image">
+                            <div class="badges">
+                                <span class="badge writer">WRITER</span>
+                            </div>
+                            <h2 class="card-title"><i>CHOKE</i></h2>
+                            <p>I received the Annabelle Bonner Award in 2020 for short fiction that demonstrates technical skill and promise in the art of the narrative</p>
+                            <button class="card-button">
+                                <i class="fa-solid fa-square-up-right"></i>
+                            </button>
+                        </a>
+                    </li>
+                    <li class="card-item">
+                        <a href="https://dirtyblood.substack.com/" class="card-link">
+                            <img src="images/changson.png" alt="INSERT ALT HERE" class="card-image">
+                            <div class="badges">
+                                <span class="badge writer">WRITER</span>
+                            </div>
+                            <h2 class="card-title"><i>changson</i></h2>
+                            <p>In my free time, I casually write, trying to weave memories together to craft narratives.</p>
+                            <button class="card-button">
+                                <i class="fa-solid fa-square-up-right"></i>
+                            </button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-container.addEventListener('touchmove', (e) => {
-  if (!isDown) return;
-  const x = e.touches[0].pageX;
-  const walk = startX - x;
-  container.scrollLeft = scrollLeftStart + walk;
-});
+        <div class="section" id="services-section">
+            <h1>Services</h1>
 
-container.addEventListener('touchend', () => {
-  isDown = false;
-  const width = window.innerWidth;
-  currentIndex = Math.round(container.scrollLeft / width);
-  scrollToIndex(currentIndex);
-});
+            <div class="card-wrapper">
+                <ul class="card-list">
+                    <li class="card-item">
+                            <i class="fa-solid fa-pencil"></i>
+                            <h2 class="card-title">Writing, Editing, & Revision</h2>
+                            <p>In the Summer of 2019, I ran away from home after my freshman year at Georgetown University. This article details my endeavor to remain at Georgetown while combatting housing insecurity, PTSD, and starvation.</p>
+                    </li>
+                    <li class="card-item">
+                            <i class="fa-solid fa-school"></i>
+                            <h2 class="card-title">Tutoring</h2>
+                            <p>In the Summer of 2019, I ran away from home after my freshman year at Georgetown University. This article details my endeavor to remain at Georgetown while combatting housing insecurity, PTSD, and starvation.</p>
+                    </li>
+                    <li class="card-item">
+                            <i class="fa-solid fa-apple-whole"></i>
+                            <h2 class="card-title">Education Consulting</h2>
+                            <p>In the Summer of 2019, I ran away from home after my freshman year at Georgetown University. This article details my endeavor to remain at Georgetown while combatting housing insecurity, PTSD, and starvation.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-// Update currentIndex on scroll
-container.addEventListener('scroll', () => {
-  const scrollLeft = container.scrollLeft;
-  const width = window.innerWidth;
-  currentIndex = Math.round(scrollLeft / width);
-  updateDots();
-});
+        <div class="section">
+            <h1>What They Say About Teacher Hock</h1>
 
-// Dot navigation
-dots.forEach(dot => {
-  dot.addEventListener('click', () => {
-    const index = parseInt(dot.dataset.index);
-    scrollToIndex(index);
-  });
-});
+            <div class="comment-grid">
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+                <div class="item">
+                    <h2>Great experience!</h2>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>- Anthony Campos-Schmitt</p>
+                </div>
+            </div>
+        </div>
 
-// Keyboard arrow keys navigation
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    scrollToIndex(currentIndex - 1);
-  } else if (e.key === 'ArrowRight') {
-    scrollToIndex(currentIndex + 1);
-  }
-});
-</script>
+        <div id="contact-section" class="section">
+            <h1>Contact Me</h1>
 
-</body>
-</html>
+            <form id="contact-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+
+                <button type="submit" id="contact-submit">Send</button>
+            </form>
+
+            <p id="response"></p>
+
+            <div class="linkedin-button-container">
+                <a href="https://www.linkedin.com/in/william-hockaday/" target="_blank" class="linkedin-button">
+                    <i class="fab fa-linkedin"></i> Connect on LinkedIn
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dots Navigation -->
+    <div class="dots">
+    <div class="dot active" data-index="0"></div>
+    <div class="dot" data-index="1"></div>
+    <div class="dot" data-index="2"></div>
+    <div class="dot" data-index="3"></div>
+    <div class="dot" data-index="4"></div>
+    <div class="dot" data-index="5"></div>
+    <div class="dot" data-index="6"></div>
+    </div>
+    </div>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+    </body>
+    </html>
