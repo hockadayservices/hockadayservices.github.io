@@ -135,19 +135,32 @@
     }
 
 
-    /* H1 title for each section */
-    /* Position h1 consistently inside each section */
-    .section h1 {
+/* H1 title for each section with chalk underline */
+.section h1 {
     position: absolute;       /* absolute relative to section */
     top: 6vh;
     left: 50%;
     transform: translateX(-50%);
-    display: inline-block;
+    display: inline-block;    /* shrink to text width */
     font-size: 3rem;
     text-align: center;
     margin: 0;
     z-index: 2000;
-    }
+}
+
+/* Chalk underline under the text */
+.section h1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.35em;          /* distance below the text */
+    width: 100%;             /* span the width of the h1 text */
+    height: 0.4em;           /* thickness of underline */
+    background: url('images/chalk.png') no-repeat;
+    background-size: 100% 100%; /* scale vertically to fit line height */
+}
+
+
 
     
 
@@ -483,9 +496,7 @@
 
     #portfolio-section .card-list {
     display: flex;
-    gap: 20px;
-    padding: 0;
-    margin: 0;
+    gap: 2vw;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
@@ -516,7 +527,6 @@
         flex: 0 0 auto; /* don't shrink */
         scroll-snap-align: center;     /* snap to center */
         list-style: none;
-        padding: 0;
         text-align: justify;
     }
 
@@ -527,12 +537,10 @@
         justify-content: center; /* vertical centering */
         align-items: center;     /* horizontal centering */
         text-align: justify;      /* make multi-line text center too */
-        color: #000;
         background: rgba(0, 0, 0, 0.7);
         padding: 1em;
         border-radius: 12px;
         text-decoration: none;
-        border: 2px solid transparent;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
         transition: .2s ease;
     }
@@ -550,8 +558,7 @@
     object-fit: contain;  /* maintain aspect ratio */
     border-radius: 10px;
     display: block;       /* remove inline spacing */
-    margin: 1em auto 0 auto;       /* center image horizontally */
-    outline: .12em solid;
+    outline: .12em solid #000;
 }
 
 #portfolio-section .card-list .card-item p {
