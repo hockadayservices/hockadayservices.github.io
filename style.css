@@ -135,39 +135,25 @@
     }
 
 
-/* Position h1 consistently inside each section */
-.section h1 {
-  position: absolute;       /* absolute relative to section */
-  top: 6vh;                 /* vertical placement (adjust as needed) */
-  left: 50%;                /* horizontal center */
-  transform: translateX(-50%); /* center exactly */
-  display: inline-block;
-  font-size: 3rem;
-  text-align: center;
-  margin: 0;
-  z-index: 2000;
-}
+    /* H1 title for each section */
+    /* Position h1 consistently inside each section */
+    .section h1 {
+    position: absolute;       /* absolute relative to section */
+    top: 6vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    font-size: 3rem;
+    text-align: center;
+    margin: 0;
+    z-index: 2000;
+    }
 
-/* Chalk underline animation */
-.section h1::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -.2em;
-  width: 100%;
-  height: 0.2em;
-  background: url('images/chalk.png') no-repeat;
-  background-size: 100% 100%;
-  
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 2s ease-out, opacity 0.8s ease-out;
-  opacity: 1;
-}
+    
 
-.section h1.fade-in::after {
-  transform: scaleX(1);
-}
+    
+    
+
 
 
 
@@ -387,25 +373,33 @@
     min-width: 280px;
     height: 20em;
     min-height: 10vh;
+    align-items: center;
 }
 
 /* Badge container at the top */
 .card .badge {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     background: #000;
     border-radius: 15px;
     padding: 1em;
+    width: 100%;
+    height: auto;
+    max-height: 20vh;
+    box-sizing: border-box;
 }
 
 /* Image on the left */
 .card .badge-logo {
-    min-width: 6em;           /* adjust as needed */
-    width: 6em;
-    margin-right: 1em;
-    flex-shrink: 0;
-    border-radius: 5px;    /* optional: round corners */
+    max-width: 6em;        /* fixed maximum width */
+    max-height: 6em;       /* fixed maximum height */
+    width: auto;           /* maintain aspect ratio */
+    height: auto;          /* maintain aspect ratio */
+    margin-right: 1em;     /* spacing from text */
+    flex-shrink: 0;        /* don’t shrink in flex container */
+    border-radius: 5px;
+    object-fit: contain;   /* scale image without distortion */
 }
 
 /* Text on the right */
@@ -573,11 +567,11 @@
     #portfolio-section .card-list .card-item h2 {
         padding: 0 0 0 0;
         margin: .8em 0 .8em 0;
-        border: .12em solid;
+        border: .12em solid #000;
         border-radius: 1em;
         padding: .4em;
         text-align: center;
-        background: #000;
+        background: rgba(0, 0, 0, 0.40);
     }
 
 #portfolio-section .badges {

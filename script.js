@@ -11,25 +11,27 @@
   let isHoveringResources = false;
 
 
-  // H1 scroll-triggered animation
-// Select all H1s inside sections
+
+// H1 elements
+// Grab all your slide <h1> elements
 const headings = document.querySelectorAll('.section h1');
 
-// IntersectionObserver options
+// Set up observer
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      // Add the class to trigger CSS animation
-      entry.target.classList.add('fade-in');
-    } else {
-      // Remove it so it can animate again if user scrolls back
-      entry.target.classList.remove('fade-in');
+      entry.target.classList.add('animate-underline');
+      observer.unobserve(entry.target); // stop watching once animated
     }
   });
-}, { threshold: 0.5 }); // trigger when 50% of the heading is visible
+}, { 
+  root: container,   // 👈 this tells it to use your scroll-container
+  threshold: 0.3     // trigger when at least 30% of heading is visible
+});
 
-// Observe each heading
+// Attach observer to each heading
 headings.forEach(h1 => observer.observe(h1));
+
 
 
 
