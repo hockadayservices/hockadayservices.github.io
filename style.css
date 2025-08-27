@@ -1,117 +1,89 @@
-    /* Reset */
-    html, body {
+/* Reset & Base */
+html, body {
     margin: 0;
+    padding: 0;
     overflow: hidden;
     height: 100%;
     font-family: "Londrina Solid", "Londrina Shadow", cursive;
-    }
+    scroll-behavior: smooth;
+}
 
-    /* Scroll Container */
-    .scroll-container {
+.scroll-container {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;          
+    flex-wrap: nowrap;
     height: 100vh;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    }
+}
 
-    .scroll-container::-webkit-scrollbar {
-    display: none;  
-    }
+.scroll-container::-webkit-scrollbar { display: none; }
+.element::-webkit-scrollbar { display: none; }
+.element { -ms-overflow-style: none; }
 
-    .element::-webkit-scrollbar {
-    display: none; /* Hides the scrollbar */
-    scrollbar-width: none;
-    }
-
-    .element {
-    -ms-overflow-style: none; /* Hides the scrollbar */
-    }
-
-    /* Sections */
-    .section {
+/* Sections */
+.section {
     position: relative;
-    text-align: center;
-    min-width: 100vw;
-    width: 100vw;
-    min-height: 100vh;
-    height: 100vh;          /* force full viewport height */
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    min-width: 100vw;
+    width: 100vw;
+    min-height: 100vh;
+    height: 100vh;
+    box-sizing: border-box;
     scroll-snap-align: start;
     font-size: 1rem;
     color: white;
-    overflow: visible;      /* let container handle horizontal scroll */
+    overflow: visible;
     background: #efbf04;
-    }
+}
 
-    .section .content {
-    flex: 1;                  /* fill remaining space */
+.section .content {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;  /* vertical centering */
-    align-items: center;      /* horizontal centering */
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
+.section .card-item i {
+    font-size: 4rem;
+    margin: 0;
+    padding: 0.3em 0 0.3em;
+}
 
-
-    /* Arrow Buttons */
-    .arrow {
+/* Arrow Buttons */
+.arrow {
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
-    pointer-events: auto;
-    transition: all 0.3s ease;
-    opacity: 0;
-    z-index: 1000;
-    
-    /* Circular button */
-    width: 2em;              /* adjust size */
+    width: 2em;
     height: 2em;
-    background: none; /* semi-transparent black */
-    border: none;        /* makes it circular */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;               /* icon color */
-    font-size: 2rem;           /* icon size */
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #fff;
     cursor: pointer;
-    }
-
-    .arrow-left {
-    left: 1vw;               /* distance from left edge */
-    }
-
-    .arrow-right {
-    right: 1vw;              /* distance from right edge */
-    }
-
-    .arrow-left.show, .arrow-right.show {
-    opacity: 1;
-    }
-
-    .arrow-left.hide, .arrow-right.hide {
+    transition: all 0.3s ease;
     opacity: 0;
-    }
+    z-index: 1000;
+}
 
-    /* Optional hover effect */
-    .arrow:hover {
-    transform: translateY(-50%) scale(1.1);
-    }
+.arrow-left { left: 1vw; }
+.arrow-right { right: 1vw; }
+.arrow.show { opacity: 1; }
+.arrow:hover { transform: translateY(-50%) scale(1.1); }
 
-
-
-
-    /* Dots Navigation */
-    .dots {
+/* Dots Navigation */
+.dots {
     position: fixed;
     bottom: 20px;
     left: 50%;
@@ -119,114 +91,86 @@
     display: flex;
     gap: 10px;
     z-index: 2000;
-    }
+}
 
-    .dot {
+.dot {
     width: 15px;
     height: 15px;
     border-radius: 50%;
     background-color: rgba(255,255,255,0.5);
     cursor: pointer;
     transition: background-color 0.3s;
-    }
+}
 
-    .dot.active {
-    background-color: white;
-    }
+.dot.active { background-color: white; }
 
-
-/* H1 title for each section with chalk underline */
+/* Titles, subtitles, and paragrpaphs */
 .section h1 {
-    position: absolute;       /* absolute relative to section */
+    position: absolute;
     top: 6vh;
     left: 50%;
     transform: translateX(-50%);
-    display: inline-block;    /* shrink to text width */
     font-size: 3rem;
+    font-family: "Londrina Shadow";
+    font-weight: 900;
     text-align: center;
     margin: 0;
     z-index: 2000;
 }
 
-/* Chalk underline under the text */
 .section h1::after {
     content: "";
     position: absolute;
     left: 0;
-    bottom: -0.35em;          /* distance below the text */
-    width: 100%;             /* span the width of the h1 text */
-    height: 0.4em;           /* thickness of underline */
+    bottom: -0.35em;
+    width: 100%;
+    height: 0.4em;
     background: url('images/chalk.png') no-repeat;
-    background-size: 100% 100%; /* scale vertically to fit line height */
+    background-size: 100% 100%;
 }
 
+.section h2 {
+    font-weight: 500;
+    font-size: 1.5rem;
+}
 
+.section p {
+    color: #aaaaaa;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    font-size: 1.25rem;
+}
 
-    
-
-    
-    
-
-
-
-
-
-
-
-    /* Intro Slide */
-    /* Hock-1 only in intro slide */
-    #intro {
+/* Intro Slide */
+#intro {
     display: flex;
-    flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
-    position: relative;
-    box-sizing: border-box;
-    height: 100vh;
-    }
+}
 
-
-
-    #intro .hock-1 {
+#intro .hock-1, #intro .chalkboard {
     position: absolute;
-    display: block;       /* make sure it shows */
-    bottom: 0;
-    right: 10vw;
-    }
+    display: block;
+}
 
-    /* Ensure it doesn't appear elsewhere */
-    .hock-1:not(#intro .hock-1) {
-    display: none;
-    }
+.hock-1:not(#intro .hock-1),
+.chalkboard:not(#intro .chalkboard) { display: none; }
 
-    #intro .chalkboard {
-    position: absolute;
-    display: block;       /* make sure it shows */
-    bottom: 18vh;
-    right: 26vw;
-    }
+#intro .hock-1 { bottom: 0; right: 10vw; }
+#intro .chalkboard { bottom: 18vh; right: 26vw; }
 
-    /* Ensure it doesn't appear elsewhere */
-    .chalkboard:not(#intro .chalkboard) {
-    display: none;
-    }
-
-
-    /* About Teacher Hock */
-    #about.section {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* stack header + grid from top */
+/* About Section */
+#about.section {
+    justify-content: flex-start;
     text-align: center;
     width: 100%;
     height: 100%;
-    box-sizing: border-box;
-    overflow-y: auto;             /* vertical scroll if content exceeds section height */
-    scroll-snap-align: start;
-    color: white;
-    }
+    overflow-y: auto;
+}
 
-    #about .card {
+#about .card {
     background: rgba(0,0,0,0.65);
     color: #aaaaaa;
     padding: 1em;
@@ -239,148 +183,75 @@
     position: relative;
     overflow: visible;
     text-align: center;
-    }
+}
 
-    /* overlay image */
-    #about .card .polaroid-1 {
-    position: absolute;
-    top: -7em;
-    left: -3.4em;
-    width: 6em;
-    height: auto;
-    z-index: 10;
-    transform: rotate(-30deg);
-    pointer-events: none;
-    }
+#about .card .polaroid-1 { position: absolute; top: -7em; left: -3.4em; width: 6em; transform: rotate(-30deg); pointer-events: none; }
+#about .card .polaroid-2 { position: absolute; bottom: -6em; right: -4em; width: 6em; transform: rotate(20deg); pointer-events: none; }
 
-    #about .card .polaroid-2 {
-    position: absolute;
-    bottom: -6em;
-    right: -4em;
-    width: 6em;
-    height: auto;
-    z-index: 10;
-    transform: rotate(20deg);
-    pointer-events: none;
-    }
+#about .card .bio { text-indent: 2em; text-align: justify; }
 
-    #about .card .bio {
-    text-indent: 2em;
-    color: #aaaaaa;
-    text-align: justify;
-    }
+/* Mission & Values */
+#mission-values.section {
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+}
 
-    #about .card p {
-    display: block;
-    text-align: justify;
-    text-justify: inter-word;
-    }
+#mission-values .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 20px;
+    width: min(1200px,100%);
+    margin: 0 auto;
+}
 
-
-
-
-
-    /* Mission & Values Section */
-
-    #mission-values.section {
+#mission-values .card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* stack header + grid from top */
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    overflow-y: auto;             /* vertical scroll if content exceeds section height */
-    scroll-snap-align: start;
-    color: white;
-    }
-
-    #mission-values .card-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 3 columns */
-    grid-template-rows: repeat(2, auto);   /* 2 rows, auto-height to fit content */
-    gap: 20px;
-    width: min(1200px, 100%);
-    margin: 0 auto;
-    }
-
-    #mission-values .card {
-    background: rgba(0, 0, 0, 0.65);
+    justify-content: center;   /* centers the content vertically */
+    text-align: justify;
+    background: rgba(0,0,0,0.65);
     border-radius: 15px;
     padding: 20px 25px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    text-align: justify;
-    }
-
-    #mission-values .card h2 {
-    margin-top: 0;
-    font-size: 2rem;
-    margin-bottom: 10px;
-    text-align: center;
-    }
-
-    #mission-values .card p {
-    margin: 0 0 10px;
-    font-size: 1.2rem;
-    font-style: light;
-    font-weight: 300;
-    color: #aaaaaa;
-    text-align: justify;
-    }
-
-    #mission-values .card ul {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin: 0;
-    }
-
-    #mission-values .card li {
-    margin-bottom: 6px;
-    font-size: 0.4em;
-    line-height: 1.5em;
-    }
-
-    /* Education & Experience Section */
-#education-experience.section {
-    display: flex;               /* make section a flex container */
-    flex-direction: column;      /* stack children vertically */
-    justify-content: center;     /* center vertically */
-    align-items: center;         /* center horizontally */
-    height: 100vh;               /* full viewport height */
-    width: 100%;
-    box-sizing: border-box;
 }
 
-/* Horizontal scrolling card container */
+#mission-values .card h2 {
+    position: relative;       /* stays in normal flow */
+    padding-bottom: .4em;
+    margin: 0 auto auto 0;    /* top margin 0, bottom margin auto pushes rest down */
+    text-align: center;
+    width: 100%;
+}
+
+#mission-values .card ul { list-style-type: disc; padding-left: 20px; margin: 0; }
+#mission-values .card li { font-size: 0.4em; line-height: 1.5em; margin-bottom: 6px; }
+
+/* Education & Experience (Horizontal Scroll) */
+#education-experience.section { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
 #education-experience .card-grid {
     display: flex;
-    flex-wrap: nowrap;           /* keep cards in a single row */
-    gap: 1em;                    /* space between cards */
-    overflow-x: auto;            /* horizontal scroll */
-    justify-content: center;     /* center cards horizontally */
-    align-items: center;         /* vertically center cards inside grid */
+    flex-wrap: nowrap;
+    gap: 1em;
+    overflow-x: auto;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 100%;
     padding-bottom: 20vh;
-    box-sizing: border-box;
 }
 
-/* Optional: hide horizontal scrollbar on webkit browsers */
-#education-experience .card-grid::-webkit-scrollbar {
-    display: none;
-}
+#education-experience .card-grid::-webkit-scrollbar { display: none; }
 
-/* Individual card */
 #education-experience .card {
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0,0,0,0.65);
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.8);
     padding: 1em;
     display: flex;
-    flex-direction: column; /* vertical layout */
+    flex-direction: column;
     min-width: 20em;
     width: 24.5vw;
     min-height: 20em;
@@ -389,280 +260,48 @@
     position: relative;
 }
 
-/* Badge container at the top */
-.card .badge {
-    display: flex;
-    background: #000;
-    border-radius: 15px;
-    padding: 1em;
-    width: 100%;
-    height: auto;
-    max-height: 20vh;
-    box-sizing: border-box;
-    align-items: left;
+.fit-text {
+    display: inline-block; /* shrink-to-fit content */
+    white-space: nowrap;   /* prevent wrapping */
+    width: auto;           /* let JS control width */
+    font-size: inherit;       /* initial size; JS will override */  
 }
 
-/* Image on the left */
-.card .badge-logo {
-    max-width: 6em;        /* fixed maximum width */
-    max-height: 6em;       /* fixed maximum height */
-    width: auto;           /* maintain aspect ratio */
-    height: auto;          /* maintain aspect ratio */
-    margin-right: 1em;     /* spacing from text */
-    flex-shrink: 0;        /* don’t shrink in flex container */
-    border-radius: 5px;
-    object-fit: contain;   /* scale image without distortion */
-}
+#education-experience .badge { display: flex; background: #000; border-radius: 15px; padding: 1em; align-items: left; }
+#education-experience .badge-logo { max-width:6em; max-height:6em; padding-right:1em; flex-shrink:0; border-radius:5px; object-fit:contain; }
+#education-experience .badge-text h2, .badge-text { margin:0; text-align:left; }
+#education-experience .badge-text p { margin:0; font-size:1.4rem; color:#cccccc; font-weight:300; }
 
-/* Text on the right */
-.card .badge-text h2 {
-    margin: 0;
-    font-size: 2.0rem;
-    display: block;
-    box-sizing: border-box;
-    text-align: left;
-}
+/* Lists & Links */
+#education-experience .card ul { padding-left: 1.5em; margin-top:1em; }
+#education-experience .card li { font-weight:300; font-size:1.4rem; line-height:1.5em; color:#aaaaaa; }
+#education-experience a { text-decoration:none; color:inherit; transition: color .3s; }
+#education-experience .card a:hover { color:#efbf04; }
 
-.card .badge-text p {
-    margin: 0;
-    font-size: 1.4rem;
-    color: #cccccc;
-    width: 100%;
-    display: block;
-    box-sizing: border-box;
-    text-align: left;
-}
-
-/* List inside card */
-#education-experience .card ul {
-    list-style-type: disc;
-    list-style-position: outside;
-    margin: 0;
-    padding-left: 1.5em;
-    padding-top: 1em;
-    text-align: left;
-    box-sizing: border-box;
-}
-
-#education-experience .card li {
-    font-size: 1.4rem;
-    font-weight: 300;
-    line-height: 1.5em;
-    color: #aaaaaa;
-    box-sizing: border-box;
-}
-
-/* Links */
-#education-experience a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.3s ease;
-}
-
-#education-experience .card a:hover {
-    color: #efbf04;
-    text-decoration: none;
-}
-
-
-
-
-
-
-
-    /* Portfolio */
-
-    #portfolio-section {
-        position: relative;
-        min-height: 100vh;
-    }
-
-    #portfolio-section .card-wrapper {
-        align-items: flex-start;   /* aligns content to the left */
-        justify-content: flex-start; /* ensures horizontal layout starts at left */
-        display: flex;
-        flex-wrap: wrap;          /* allow multiple cards to wrap */
-        gap: 20px;                /* space between cards */
-        width: 100%;              /* full width of section */
-        box-sizing: border-box;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-
-    #portfolio-section .card-list-wrapper {
-        position: relative; /* for overlay positioning */
-        overflow: hidden;   /* hide overflow to only show gradient edges */
-        padding: 0 1em; /* optional inner spacing */
-    }
-
-    #portfolio-section .card-list {
-    display: flex;
-    gap: 2vw;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: none;
-    scroll-behavior: smooth;
-
-    /* Add horizontal padding equal to half the viewport minus half a card width */
-    padding-left: calc(50vw - 200px); /* 200px is half card width */
-    padding-right: calc(50vw - 200px);
-
-    /* fade edges of the cards */
-    -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
-    -webkit-mask-composite: destination-in;
-
-    mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
-    mask-repeat: no-repeat;
-    mask-size: 100% 100%;
-    mask-composite: intersect;
-    }
-
-    #portfolio-section .card-list::-webkit-scrollbar {
-        display: none;           /* Chrome, Safari, Opera */
-    }
-
-    #portfolio-section .card-list .card-item {
-        flex: 0 0 auto; /* don't shrink */
-        scroll-snap-align: center;     /* snap to center */
-        list-style: none;
-        text-align: justify;
-    }
-
-    #portfolio-section .card-list .card-item .card-link {
-        width: 24em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* vertical centering */
-        align-items: center;     /* horizontal centering */
-        text-align: justify;      /* make multi-line text center too */
-        background: rgba(0, 0, 0, 0.7);
-        padding: 1em;
-        border-radius: 12px;
-        text-decoration: none;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-        transition: .2s ease;
-    }
-
-    #portfolio-section .card-list .card-item .card-link:hover {
-        border-color: #000;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-    }
-
-#portfolio-section .card-list .card-link .card-image {
-    width: auto;          /* let image keep natural width */
-    height: auto;         /* let image keep natural height */
-    max-width: 100%;      /* don’t exceed card width */
-    max-height: 14em;    /* optional: limit height */
-    object-fit: contain;  /* maintain aspect ratio */
-    border-radius: 10px;
-    display: block;       /* remove inline spacing */
-    outline: .12em solid #000;
-}
-
-#portfolio-section .card-list .card-item p {
-    font-size: 1.2rem;       /* desired font size */
-    font-weight: 300;
-    line-height: 1.4;
-    color: #aaaaaa;
-    font-family: "Londrina Solid", sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-    #portfolio-section .card-list .card-item h2 {
-        padding: 0 0 0 0;
-        margin: .8em 0 .8em 0;
-        border: .12em solid #000;
-        border-radius: 1em;
-        padding: .4em;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.40);
-    }
-
-#portfolio-section .badges {
-    display: flex;           /* row layout */
-    gap: 8px;                /* spacing between badges */
-    flex-wrap: wrap;         /* wrap if needed */
-    justify-content: center; /* center badges horizontally */
-    padding: 1.2em 0 0 0;   /* top padding */
-}
-
-#portfolio-section .badge {
-    display: inline-block;
-    padding: 8px 12px;
-    font-size: 1.2rem;
-    font-weight: 500;
-    border-radius: 50px;
-    background: #000;        /* default background */
-    color: #fff;             /* default text color */
-    white-space: nowrap;
-    outline: .12em solid;
-}
-
-/* Role-based colors: change background, not text */
-#portfolio-section .badge.writer {
-    background-color: #ff0000; /* red */
-    color: #fff;               /* optional, ensure contrast */
-}
-
-#portfolio-section .badge.student-advocate {
-    background-color: #efbf04; /* yellow */
-    color: #000;               /* contrast for readability */
-}
-
-#portfolio-section .badge.teacher {
-    background-color: #0a84ff; /* blue */
-    color: #fff;               /* contrast */
-}
-
-    #portfolio-section .card-list .card-link .card-title {
-        font-size: 1.6rem;
-        color: #fff;
-        font-weight: 600;
-    }
-
-
-
-/* Free Resources */
-#resources-section {
+/* ----------------------------
+   Portfolio Section
+---------------------------- */
+#portfolio-section {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-/* Card wrapper: horizontal scroll container */
-#resources-section .card-wrapper {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-    box-sizing: border-box;
-    gap: 20px;
-}
-
-/* Optional inner wrapper for masking / overflow */
-#resources-section .card-list-wrapper {
+#portfolio-section .card-list-wrapper {
     position: relative;
     overflow: hidden;
     padding: 0 1em;
 }
 
-/* Card list: scrollable flex container */
-#resources-section .card-list {
+#portfolio-section .card-list {
     display: flex;
     flex-wrap: nowrap;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
-    padding-left: calc(50vw - 200px);
-    padding-right: calc(50vw - 200px);
+    gap: 2vw;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding-left: calc(50% - 12em); /* relative to container width */
+    padding-right: calc(50% - 12em);
 
     /* Fade edges */
     -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
@@ -676,453 +315,454 @@
     mask-composite: intersect;
 }
 
-/* Hide scrollbar on webkit browsers */
-#resources-section .card-list::-webkit-scrollbar {
+#portfolio-section .card-list::-webkit-scrollbar {
     display: none;
 }
 
-/* Individual card items */
-#resources-section .card-list .card-item {
+#portfolio-section .card-item {
     flex: 0 0 auto;
     scroll-snap-align: center;
     list-style: none;
-    padding: 0;
     text-align: justify;
 }
 
-/* Card link: main card styling */
-#resources-section .card-list .card-item .card-link {
+#portfolio-section .card-item .card-link {
+    width: 24em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: justify;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1em;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    transition: 0.2s ease;
+    border: 0.2em solid transparent;
+    text-decoration: none;
+    color: inherit;
+}
+
+#portfolio-section .card-item .card-link:hover {
+    border-color: #000;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+}  
+
+#portfolio-section .card-link .card-image {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 14em;
+    object-fit: contain;
+    border-radius: 10px;
+    outline: 0.12em solid #000;
+    display: block;
+}
+
+#portfolio-section .card-link .card-title {
+    color: #fff;
+    margin: 0.8em 0;
+    padding: 0.4em;
+    border: 0.08em solid #000;
+    border-radius: 1em;
+    text-align: center;
+    background: rgba(0,0,0,0.4);
+}
+
+    /* Portfolio Badges */
+    #portfolio-section .card-link .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        margin-top: 0.5em;
+    }
+
+    #portfolio-section .card-link .badges .badge {
+        display: inline-block;
+        padding: 0.3em 0.8em;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #fff;
+        text-align: center;
+    }
+
+    /* Role-based colors */
+    #portfolio-section .card-link .badges .writer {
+        background-color: #ff6f61; /* reddish */
+    }
+
+    #portfolio-section .card-link .badges .teacher {
+        background-color: #4caf50; /* green */
+    }
+
+    #portfolio-section .card-link .badges .student-advocate {
+        background-color: #2196f3; /* blue */
+    }
+
+/* ----------------------------
+   Resources Section
+---------------------------- */
+#resources-section {
+    position: relative;
+    height: 100vh;
+}
+
+#resources-section .card-list-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 0 1em;
+}
+
+#resources-section .card-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding-left: calc(50% - 13em); /* half of card width (26em) */
+    padding-right: calc(50% - 13em);
+
+    /* Fade edges */
+    -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-composite: destination-in;
+
+    mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    mask-composite: intersect;
+}
+
+#resources-section .card-list::-webkit-scrollbar { display: none; }
+
+#resources-section .card-item {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    list-style: none;
+    text-align: justify;
+}
+
+#resources-section .card-item .card-link {
     width: 26em;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: justify;
-    color: #000;
-    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    background: rgba(0,0,0,0.65);
     padding: 1em;
     border-radius: 12px;
     text-decoration: none;
-    border: 2px solid transparent;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
+    border: 0.2em solid transparent;
+    box-shadow: 0 10px 10px rgba(0,0,0,0.4);
     transition: 0.2s ease;
 }
 
-#resources-section .card-list .card-item .card-link:hover {
+#resources-section .card-item .card-link:hover {
     border-color: #000;
     box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-    }
-
-/* Card text */
-#resources-section .card-list .card-item p {
-    font-size: 1.6rem;
-    font-weight: 300;
-    line-height: 1.4;
-    color: #aaaaaa;
-    font-family: "Londrina Solid", sans-serif;
-    margin: 0;
-    padding-bottom: 1.5em;
 }
 
-#resources-section .card-list .card-item h2 {
-    margin: 0.8em 0;
-    padding: 0;
+/* ----------------------------
+   Services Section
+---------------------------- */
+#services-section {
+    position: relative;
+    height: 100vh;
 }
 
-#resources-section .card-list .card-item i {
-    font-size: 4rem;
-    margin: 0;
-    padding-top: 0.3em;
-    color: #fff;
+#services-section .card-list-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 0 1em;
 }
 
-/* Card title inside link */
-#resources-section .card-list .card-link .card-title {
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: #fff;
-    font-size: 2rem;
-}
-
-
-
-
-
-
-
-
-
-    /* Services */
-
-    #services-section {
-        position: relative;
-        height: 100vh;
-    }
-
-    #services-section .card-wrapper {
-        display: flex;
-        align-items: flex-start;   /* aligns content to the left */
-        justify-content: flex-start; /* ensures horizontal layout starts at left */
-        width: 100%;
-        margin-top: auto;
-        margin-bottom: auto;
-        box-sizing: border-box;
-        gap: 20px;                /* space between cards */
-        flex-wrap: wrap;          /* allow multiple cards to wrap */
-    }
-
-
-    #services .card-list-wrapper {
-        position: relative; /* for overlay positioning */
-        overflow: hidden;   /* hide overflow to only show gradient edges */
-        padding: 0 1em; /* optional inner spacing */
-    }
-
-
-
-    #services-section .card-list::-webkit-scrollbar {
-        display: none;           /* Chrome, Safari, Opera */
-    }
-
-    #services-section .card-list .card-item {
-        width: 30em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* vertical centering */
-        align-items: center;     /* horizontal centering */
-        text-align: justify;      /* make multi-line text center too */
-        color: #fff;
-        background: rgba(0, 0, 0, 0.65);
-        padding: 1em;
-        border-radius: 12px;
-        border: 2px solid transparent;
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
-        transition: .2s ease;
-        flex: 0 0 auto;          /* prevent shrinking in horizontal scroll */
-    }
-
-    #services-section .card-list .card-item:hover {
-        border-color: #000;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-    }
-
-
-    #services-section .card-list .card-item p {
-        font-size: 1.6rem; /* or whatever size fits */
-        font-weight: 300;
-        color: #aaaaaa;
-        padding: 0 0 1em 0;
-        margin: 0 0 0 0;
-    }
-
-    #services-section .card-list .card-item i {
-        font-size: 4rem; /* or whatever size fits */
-        margin: 0;
-        padding: .3em 0 0 0;
-    }
-
-    #services-section .card-list {
-        display: flex;
-        gap: 20px;
-        padding: 0;
-        margin: 0;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        padding-left: calc(50vw - 200px);
-        padding-right: calc(50vw - 200px);
-
-        /* Add horizontal padding equal to half the viewport minus half a card width */
-        padding-left: calc(50vw - 200px); /* 200px is half card width */
-        padding-right: calc(50vw - 200px);
-
-        /* fade edges of the cards */
-        -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
-        -webkit-mask-repeat: no-repeat;
-        -webkit-mask-size: 100% 100%;
-        -webkit-mask-composite: destination-in;
-
-        mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
-        mask-repeat: no-repeat;
-        mask-size: 100% 100%;
-        mask-composite: intersect;
-        }
-
-
-
-        /* Target only h2 inside services section cards */
-        #services-section .card-list .card-item h2 {
-        font-size: 2rem; /* choose whatever size fits */
-        line-height: 1.3;
-        margin: 0.5em 0 0.5em 0;
-        }
-
-
-
-
-
-
-        /* What they say about Teacher Hock */
-/* Container grid */
-.comment-grid {
-    display: grid;
-    grid-template-columns: 15% 85%; /* shrink left column, expand right */
-    box-sizing: border-box;
-}
-
-/* Left column: image */
-.left-column {
+#services-section .card-list {
     display: flex;
-    position: relative;
+    gap: 20px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding-left: calc(50% - 15em); /* half of card width (30em / 2) */
+    padding-right: calc(50% - 15em);
+
+    /* Fade edges */
+    -webkit-mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-composite: destination-in;
+
+    mask-image: linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%);
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    mask-composite: intersect;
 }
 
-.left-column .hock-2 {
-    position: relative;   /* relative to viewport */
-    left: 0;         /* distance from the left edge of the page */
-    bottom: -14vh;
-    height: 100%;
-    max-height: 30em;
-    width: auto;
-    z-index: 100;      /* make sure it sits above other content */
-}
+#services-section .card-list::-webkit-scrollbar { display: none; }
 
-/* Right column: 3x3 grid */
-.right-column {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 1em;
-    width: 100%;
-    position: relative;
-    right: 0;
-    bottom: 0;
-}
-
-.right-column .item {
+#services-section .card-item {
+    flex: 0 0 auto;
+    width: 30em;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: justify;
     background: rgba(0,0,0,0.65);
-    border-radius: 8px;
-    text-align: center;
-    width: 24vw;        /* fill the grid cell */
-    max-width: 32em;    
-    height: 100%;       /* fill the grid row height */
-    position: relative; /* default for grid items */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.8);
+    padding: 1em;
+    border-radius: 12px;
+    border: 0.2em solid transparent;
+    box-shadow: 0 10px 10px rgba(0,0,0,0.4);
+    transition: 0.2s ease;
 }
 
-/* Typography */
-.comment-grid p {
-    font-size: 1.2rem;
-    font-weight: 300;
-}
-
-.comment-grid h2 {
-    font-size: 1.6rem;
-}
-
-/* Stars animation */
-.stars {
-    color: #ff0000;
-    font-size: 2em;
-    animation: glow 1.5s infinite alternate;
-    text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff5555;
-}
-
-@keyframes glow {
-    0% {
-        color: #ff0000;
-        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff5555;
-    }
-    100% {
-        color: #ff8080;
-        text-shadow: 0 0 10px #ff8080, 0 0 20px #ff8080, 0 0 30px #ffaaaa;
-    }
+#services-section .card-item:hover {
+    border-color: #000;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
 }
 
 
+/* ----------------------------
+   Portfolio, Resources, Services: hover scroll
+---------------------------- */
 
+/* Default state: section scrolls horizontally, cards do not */
+#portfolio-section .card-list,
+#resources-section .card-list,
+#services-section .card-list {
+    overflow-x: hidden;      /* disable horizontal scroll by default */
+    pointer-events: none;    /* ignore pointer events so parent scroll works */
+}
 
+/* Hover state: enable horizontal scroll inside card list */
+#portfolio-section .card-list:hover,
+#resources-section .card-list:hover,
+#services-section .card-list:hover {
+    overflow-x: auto;        /* enable horizontal scroll */
+    pointer-events: auto;    /* allow interaction with cards */
+}
 
+/* Make sure individual card items are always interactive */
+#portfolio-section .card-item,
+#resources-section .card-item,
+#services-section .card-item {
+    pointer-events: auto;    /* enable clicks and hover effects */
+}
 
-
-    /* Container form styling */
-    #contact-form {
+/* ----------------------------
+   Comment Section
+---------------------------- */
+/* Comments Section */
+#comments .content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 40%;
-    max-width: 800px;
-    max-height: fit-content;
-    background: rgba(0, 0, 0, 0.65);
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-    margin: 0 auto 0 auto; /* bigger bottom margin */
-    }
+    width: 86%
+}
 
+#comments h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
 
-    /* Labels */
-    #contact-form label {
-    display: block;
-    font-weight: bold;
+/* Grid layout for comments */
+.comment-grid {
+    display: grid;
+    grid-template-columns: 10vw 1fr; /* left = 10% viewport, right = 90% */
+    width: 100%;
+    gap: 1rem; /* space between left and right columns */
+}
+
+/* Left Column */
+.comment-grid .left-column {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.comment-grid .left-column img.hock-2 {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Right Column Grid for 3x3 items */
+.comment-grid .right-column {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(3, 1fr);    /* 3 rows */
+    gap: 1rem;
+}
+
+/* Individual comment items */
+.comment-grid .right-column .item {
+    background: rgba(0,0,0,0.65);
+    border-radius: 15px;
+    padding: 0;
     color: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 1vh;
-    font-size: 3rem;
-    }
+    width: 100%;
+    height: 100%;
+}
 
-    /* Inputs & textarea */
-    #contact-form input,
-    #contact-form textarea {
-    width: 80%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-    }
+/* Item content */
+.comment-grid .right-column .item h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.6rem;
+}
 
-    #contact-form input:focus,
-    #contact-form textarea:focus {
-    border-color: #efbf04;
-    outline: none;
-    }
+.comment-grid .right-column .item .stars {
+    color: #ffcc00;
+    margin-bottom: 0.5rem;
+}
 
-    /* Textarea size */
-    #contact-form textarea {
-    resize: vertical;
-    min-height: 120px;
-    }
+.comment-grid .right-column .item p {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #cccccc;
+}
 
-    /* Response text */
-    #response {
-    text-align: center;
-    margin-top: 15px;
-    }
+/* ----------------------------
+   Contact Section
+---------------------------- */
+#contact-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5vh 2em;
+    background: #efbf04; /* site’s yellow background */
+}
 
-    /* Button */
-    #contact-form button {
+#contact-section .content {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Form Layout */
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    width: 100%;
+    background: rgba(0,0,0,0.65);
+    padding: 1em;
+    border-radius: 1em;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+#contact-form .form-row {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+#contact-form .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#contact-form .form-group.full-width {
+    flex: 1 1 100%;
+}
+
+#contact-form label {
+    font-family: "Londrina Solid", cursive;
+    font-size: 1.2rem;
+    margin-bottom: 0.5em;
+    text-align: left;
+}
+
+#contact-form input,
+#contact-form textarea {
+    font-family: "Londrina Solid", cursive;
+    padding: 0.6em 1em;
+    font-size: 1rem;
+    border: 2px solid #000;
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+    width: 100%;
+    box-sizing: border-box;
     background: #fff;
     color: #000;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-family: inherit;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+#contact-form input:focus,
+#contact-form textarea:focus {
+    border-color: #000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+#contact-form textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+#contact-form button#contact-submit {
+    font-family: "Londrina Solid", cursive;
+    padding: 0.8em 1.5em;
+    font-size: 1.2rem;
+    border: 0.2em solid transparent;
+    border-radius: 12px;
+    background-color: #000;
+    color: #efbf04;
     cursor: pointer;
-    transition: background 0.3s ease;
-    margin: 2vh auto 2vh auto;
-    }
+    align-self: flex-start;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+    transition: 0.3s ease;
+}
 
-    #contact-form button:hover {
-    background: #efbf04;
-    }
-
-    /* Spinner styling */
-    .spinner {
-    border: 4px solid #f3f3f3; /* Light gray */
-    border-top: 4px solid #000; /* Black */
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    vertical-align: middle;
-    }
-
-    @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-    }
-
-    /* Optional: disable button while spinning */
-    #contact-form button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    }
-
-
-    /* LinkedIn Button only for Contact Me slide */
-    .linkedin-button-container {
-        position: absolute;
-        bottom: 8vh;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        text-align: center;
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    /* Visible state */
-    .linkedin-button-container.visible {
-        opacity: 1;
-        pointer-events: auto;
-        animation: rumbleZoomIn 0.8s forwards; /* shake on entrance */
-    }
-
-    /* Rumble + Zoom In animation */
-    @keyframes rumbleZoomIn {
-        0% { transform: translateX(-50%) translateZ(0) rotate(0deg) scale(0.8); }
-        10% { transform: translateX(-52%) translateZ(1px) rotate(-2deg) scale(0.85); }
-        20% { transform: translateX(-48%) translateZ(2px) rotate(2deg) scale(0.88); }
-        30% { transform: translateX(-51%) translateZ(3px) rotate(-1deg) scale(0.9); }
-        40% { transform: translateX(-49%) translateZ(4px) rotate(1deg) scale(0.93); }
-        50% { transform: translateX(-50%) translateZ(5px) rotate(0deg) scale(0.95); }
-        60% { transform: translateX(-51%) translateZ(6px) rotate(-1deg) scale(0.98); }
-        70% { transform: translateX(-49%) translateZ(7px) rotate(1deg) scale(1.0); }
-        80% { transform: translateX(-50%) translateZ(8px) rotate(0deg) scale(1.02); }
-        100% { transform: translateX(-50%) translateZ(10px) rotate(0deg) scale(1.05); }
-    }
-
-    /* Fade-out animation: jump up then drop */
-    @keyframes fadeOutDrop {
-        0% {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        30% {
-            transform: translateX(-50%) translateY(-20px);
-        }
-        100% {
-            opacity: 0;
-            transform: translateX(-50%) translateY(200px);
-        }
-    }
-
-    .linkedin-button-container.fade-out {
-        animation: fadeOutDrop 0.6s forwards;
-    }
-
-    /* Button styling */
-    #contact-section .linkedin-button-container .linkedin-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 16px;
-        background-color: #0A66C2;
-        color: white;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 1rem;
-    }
-
-    #contact-section .linkedin-button-container .linkedin-button i {
-        font-size: 1.2rem;
-    }
-
-
-
-    #site-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.4);
+#contact-form button#contact-submit:hover {
+    background-color: #222;
     color: #fff;
-    text-align: left;
-    padding-left: 2em;
-    z-index: 1000;
-    }
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+}
+
+/* Response text */
+#response {
+    margin-top: 1em;
+    font-size: 1.2rem;
+    color: #000;
+}
+
+/* LinkedIn Button */
+.linkedin-button-container {
+    margin-top: 2em;
+}
+
+.linkedin-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-family: "Londrina Solid", cursive;
+    font-size: 1.2rem;
+    text-decoration: none;
+    padding: 0.8em 1.2em;
+    border-radius: 12px;
+    background-color: #0077b5; /* LinkedIn blue */
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+    transition: 0.3s ease;
+}
+
+.linkedin-button:hover {
+    background-color: #005582;
+}
