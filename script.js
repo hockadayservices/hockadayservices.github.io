@@ -2,24 +2,19 @@
 // GLOBAL SELECTORS
 // ==========================
 const container = document.querySelector('.scroll-container');
-const sections = document.querySelectorAll('.section');
-const dots = document.querySelectorAll('.dot');
+const sections = Array.from(document.querySelectorAll('.section'));
+const dots = Array.from(document.querySelectorAll('.dot'));
 const leftArrow = document.querySelector('.arrow-left');
 const rightArrow = document.querySelector('.arrow-right');
 const linkedinButton = document.querySelector('#contact-section .linkedin-button-container');
 let currentIndex = 0;
 
 // Track hover states for horizontal scroll sections
-const hoverState = {
-    portfolio: false,
-    resources: false,
-    services: false
-};
+const hoverState = { portfolio: false, resources: false, services: false };
 
 // ==========================
 // INTERSECTION OBSERVER FOR H1 UNDERLINE
 // ==========================
-const headings = document.querySelectorAll('.section h1');
 const h1Observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -29,18 +24,22 @@ const h1Observer = new IntersectionObserver(entries => {
     });
 }, { root: container, threshold: 0.3 });
 
-headings.forEach(h1 => h1Observer.observe(h1));
+document.querySelectorAll('.section h1').forEach(h1 => h1Observer.observe(h1));
 
 // ==========================
 // SCROLL TO SECTION LOGIC
 // ==========================
 let isScrolling = false;
+let isKeyScrolling = false; // <-- NEW: lock for key-based scrolling
+
 function scrollToIndex(index) {
     index = Math.max(0, Math.min(index, sections.length - 1));
     currentIndex = index;
     if (isScrolling) return;
 
     isScrolling = true;
+    isKeyScrolling = true;
+
     sections[index].scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
 
     setTimeout(() => {
@@ -48,16 +47,15 @@ function scrollToIndex(index) {
         updateArrows();
         checkLinkedInVisibility();
         isScrolling = false;
+        isKeyScrolling = false; // release lock after scroll finishes
     }, 600);
 }
 
-// Update dots
 function updateDots() {
     dots.forEach(dot => dot.classList.remove('active'));
     dots[currentIndex]?.classList.add('active');
 }
 
-// Update arrows
 function updateArrows() {
     leftArrow.classList.toggle('show', currentIndex > 0);
     rightArrow.classList.toggle('show', currentIndex < sections.length - 1);
@@ -71,132 +69,113 @@ leftArrow.addEventListener('click', () => scrollToIndex(currentIndex - 1));
 rightArrow.addEventListener('click', () => scrollToIndex(currentIndex + 1));
 
 // ==========================
-// HORIZONTAL CARD SCROLL (DRY FUNCTION)
+// HORIZONTAL CARD SCROLL
 // ==========================
 function setupHorizontalScroll(listSelector, hoverKey) {
     const list = document.querySelector(listSelector);
     if (!list) return;
 
-    // Track hover
+    const cards = Array.from(list.querySelectorAll('.card-item'));
+    if (!cards.length) return;
+
+    // Track hover state
     list.addEventListener('mouseenter', () => hoverState[hoverKey] = true);
     list.addEventListener('mouseleave', () => hoverState[hoverKey] = false);
 
-    // Wheel scroll logic
+    const getCardScrollPos = card => {
+        const containerCenter = list.offsetWidth / 2;
+        const rect = card.getBoundingClientRect();
+        const listRect = list.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2 - listRect.left;
+        return list.scrollLeft + cardCenter - containerCenter;
+    };
+
+    const scrollToCard = index => {
+        index = Math.max(0, Math.min(index, cards.length - 1));
+        list.scrollTo({ left: getCardScrollPos(cards[index]), behavior: 'smooth' });
+    };
+
     list.addEventListener('wheel', e => {
+        if (!cards.length) return;
         e.stopPropagation();
         e.preventDefault();
 
         const containerCenter = list.offsetWidth / 2;
-        const scrollLeft = list.scrollLeft;
-        const cards = list.querySelectorAll('.card-item');
-
         let closestIndex = 0;
         let minDistance = Infinity;
 
         cards.forEach((card, i) => {
-            const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-            const distance = Math.abs(cardCenter - (scrollLeft + containerCenter));
+            const rect = card.getBoundingClientRect();
+            const listRect = list.getBoundingClientRect();
+            const cardCenter = rect.left + rect.width / 2 - listRect.left;
+            const distance = Math.abs(cardCenter - containerCenter);
             if (distance < minDistance) {
                 minDistance = distance;
                 closestIndex = i;
             }
         });
 
-        let targetIndex = closestIndex;
-        if (e.deltaY > 0 && closestIndex < cards.length - 1) targetIndex++;
-        if (e.deltaY < 0 && closestIndex > 0) targetIndex--;
+        if (e.deltaY > 0 && closestIndex < cards.length - 1) closestIndex++;
+        if (e.deltaY < 0 && closestIndex > 0) closestIndex--;
 
-        const targetCard = cards[targetIndex];
-        const scrollPos = targetCard.offsetLeft - containerCenter + (targetCard.offsetWidth / 2);
-        list.scrollTo({ left: scrollPos, behavior: 'smooth' });
+        scrollToCard(closestIndex);
     }, { passive: false });
+
+    // Center first card
+    scrollToCard(0);
 }
 
-// Initialize horizontal scrolls
-setupHorizontalScroll('#portfolio-section .card-list', 'portfolio');
-setupHorizontalScroll('#resources-section .card-list', 'resources');
-setupHorizontalScroll('#services-section .card-list', 'services');
+['portfolio', 'resources', 'services'].forEach(section =>
+    setupHorizontalScroll(`#${section}-section .card-list`, section)
+);
 
 // ==========================
-// VERTICAL SCROLL (MAIN SECTIONS)
+// VERTICAL SCROLL SNAP FOR MAIN SECTIONS
 // ==========================
 container.addEventListener('wheel', e => {
-    if (!hoverState.portfolio && !hoverState.resources && !hoverState.services) {
+    if (!Object.values(hoverState).some(v => v)) {
         if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
             e.preventDefault();
-            if (e.deltaY > 0) scrollToIndex(currentIndex + 1);
-            else scrollToIndex(currentIndex - 1);
+            scrollToIndex(currentIndex + (e.deltaY > 0 ? 1 : -1));
         }
     }
 }, { passive: false });
 
 // ==========================
-// AUTO-FIT TEXT FOR BADGES
-// ==========================
-function fitTextToBadge(element) {
-    const parent = element.parentElement;
-    const style = window.getComputedStyle(parent);
-    const parentWidth = parent.clientWidth 
-                        - parseFloat(style.paddingLeft) 
-                        - parseFloat(style.paddingRight);
-    
-    let fontSize = parseInt(window.getComputedStyle(element).fontSize, 10) || 100;
-    element.style.fontSize = fontSize + "px";
-
-    // Grow or shrink to fit
-    while ((element.scrollWidth < parentWidth - 1) && fontSize < 200) { // grow if small
-        fontSize++;
-        element.style.fontSize = fontSize + "px";
-    }
-    while (element.scrollWidth > parentWidth && fontSize > 1) { // shrink if too big
-        fontSize--;
-        element.style.fontSize = fontSize + "px";
-    }
-}
-
-// Apply to all badges on load and resize
-document.querySelectorAll('.fit-text').forEach(el => {
-    fitTextToBadge(el);
-    window.addEventListener('resize', () => fitTextToBadge(el));
-});
-
-// ==========================
 // DOTS & ARROW UPDATE ON MANUAL SCROLL
 // ==========================
 container.addEventListener('scroll', () => {
-    const newIndex = Math.round(container.scrollLeft / window.innerWidth);
-    if (newIndex !== currentIndex) {
-        currentIndex = newIndex;
-        updateDots();
-        updateArrows();
+    if (!isKeyScrolling) { // <-- NEW: ignore scroll updates during key-based scroll
+        const newIndex = Math.round(container.scrollLeft / window.innerWidth);
+        if (newIndex !== currentIndex) {
+            currentIndex = newIndex;
+            updateDots();
+            updateArrows();
+        }
+        checkLinkedInVisibility();
     }
-    checkLinkedInVisibility();
 });
 
 // ==========================
-// LINKEDIN BUTTON FADE LOGIC
+// LINKEDIN BUTTON VISIBILITY
 // ==========================
 function checkLinkedInVisibility() {
     if (!linkedinButton) return;
     const slide = document.querySelector('#contact-section');
-    const scrollLeft = container.scrollLeft;
-    const vw = container.clientWidth;
+    const scrollCenter = container.scrollLeft + container.clientWidth / 2;
     const slideLeft = slide.offsetLeft;
     const slideRight = slideLeft + slide.offsetWidth;
 
-    if (scrollLeft + vw/2 >= slideLeft && scrollLeft + vw/2 <= slideRight) {
-        linkedinButton.classList.remove('fade-out');
+    if (scrollCenter >= slideLeft && scrollCenter <= slideRight) {
         linkedinButton.classList.add('visible');
+        linkedinButton.classList.remove('fade-out');
     } else if (linkedinButton.classList.contains('visible')) {
         linkedinButton.classList.remove('visible');
         linkedinButton.classList.add('fade-out');
-        linkedinButton.addEventListener('animationend', () => {
-            linkedinButton.classList.remove('fade-out');
-        }, { once: true });
+        linkedinButton.addEventListener('animationend', () => linkedinButton.classList.remove('fade-out'), { once: true });
     }
 }
 
-// Trigger on scroll/resize
 container.addEventListener('scroll', checkLinkedInVisibility);
 window.addEventListener('resize', checkLinkedInVisibility);
 
@@ -215,9 +194,7 @@ if (form) {
         submitButton.disabled = true;
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-            .then(() => setTimeout(() => {
-                submitButton.textContent = "Message Sent!";
-            }, 2000))
+            .then(() => setTimeout(() => submitButton.textContent = "Message Sent!", 2000))
             .catch(error => {
                 responseMsg.textContent = "Error submitting form. Please try again.";
                 submitButton.textContent = "Send";
@@ -226,6 +203,62 @@ if (form) {
             });
     });
 }
+
+// ==========================
+// REMOVE DEFAULT SPACEBAR FUNCTION
+// ==========================
+let lastAction = 'right'; // default: move right
+let lastScrollLeft = container.scrollLeft; // track previous scroll position
+
+function doScroll(action) {
+    if (action === 'left') scrollToIndex(currentIndex - 1);
+    if (action === 'right') scrollToIndex(currentIndex + 1);
+}
+
+leftArrow.addEventListener('click', () => {
+    lastAction = 'left';
+    doScroll('left');
+});
+
+rightArrow.addEventListener('click', () => {
+    lastAction = 'right';
+    doScroll('right');
+});
+
+window.addEventListener('keydown', e => {
+    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+    if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        lastAction = 'left';
+        doScroll('left');
+    }
+
+    if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        lastAction = 'right';
+        doScroll('right');
+    }
+
+    if (e.code === 'Space') {
+        e.preventDefault();
+        if (e.shiftKey) {
+            // Reverse the last action
+            doScroll(lastAction === 'left' ? 'right' : 'left');
+        } else {
+            // Repeat last action
+            doScroll(lastAction);
+        }
+    }
+});
+
+container.addEventListener('scroll', () => {
+    const delta = container.scrollLeft - lastScrollLeft;
+    if (Math.abs(delta) > 2) { // ignore tiny scroll jitters
+        lastAction = delta > 0 ? 'right' : 'left';
+        lastScrollLeft = container.scrollLeft;
+    }
+});
 
 // ==========================
 // INITIALIZE
