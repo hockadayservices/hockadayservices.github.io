@@ -296,7 +296,8 @@ html, body {
 ---------------------------- */
 /* Wrapper for horizontal scroll and fade edges */
 .card-list-wrapper {
-    position: relative;
+    position: sticky;
+    top: 25vh;
     overflow: visible; /* keep scroll masking */
     padding: 0 1em;
     min-height: 30em;
@@ -305,7 +306,7 @@ html, body {
 .card-list-wrapper::before,
 .card-list-wrapper::after {
     content: "";
-    position: absolute;
+    position: sticky;
     top: 0;
     width: 5%;
     height: 100%;
@@ -499,13 +500,16 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 86%
+    width: 86%;
+    position: relative;
 }
 
 #comments h1 { text-align: center; margin-bottom: 2rem; }
 
 /* Grid layout for comments */
 .comment-grid {
+    position: sticky;
+    top: 22.5vh;
     display: grid;
     grid-template-columns: 10vw 1fr; /* left = 10% viewport, right = 90% */
     width: 100%;
@@ -593,6 +597,8 @@ html, body {
 /* Form Layout */
 #contact-form {
     display: flex;
+    position: sticky;
+    top: 22.5vh;
     flex-direction: column;
     gap: 1.5em;
     width: 40vw;
