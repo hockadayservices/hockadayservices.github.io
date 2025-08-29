@@ -1,268 +1,179 @@
-// ==========================
-// GLOBAL SELECTORS
-// ==========================
-const container = document.querySelector('.scroll-container');
-const sections = Array.from(document.querySelectorAll('.section'));
-const dots = Array.from(document.querySelectorAll('.dot'));
-const leftArrow = document.querySelector('.arrow-left');
-const rightArrow = document.querySelector('.arrow-right');
-const linkedinButton = document.querySelector('#contact-section .linkedin-button-container');
-let currentIndex = 0;
+document.addEventListener('DOMContentLoaded', () => {
 
-// Track hover states for horizontal scroll sections
-const hoverState = { portfolio: false, resources: false, services: false };
+    // Horizontal Carousel Logic
+    const carouselSections = ['portfolio-section', 'resources-section', 'services-section'];
 
-// ==========================
-// INTERSECTION OBSERVER FOR H1 UNDERLINE
-// ==========================
-const h1Observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-underline');
-            h1Observer.unobserve(entry.target);
-        }
-    });
-}, { root: container, threshold: 0.3 });
+    carouselSections.forEach(sectionId => {
+        const wrapper = document.getElementById(sectionId).querySelector('.card-list-wrapper');
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
 
-document.querySelectorAll('.section h1').forEach(h1 => h1Observer.observe(h1));
+        if (wrapper) {
+            wrapper.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                wrapper.classList.add('active');
+                startX = e.pageX - wrapper.offsetLeft;
+                scrollLeft = wrapper.scrollLeft;
+            });
 
-// ==========================
-// SCROLL TO SECTION LOGIC
-// ==========================
-let isScrolling = false;
-let isKeyScrolling = false; // <-- NEW: lock for key-based scrolling
+            wrapper.addEventListener('mouseleave', () => {
+                isDragging = false;
+                wrapper.classList.remove('active');
+            });
 
-function scrollToIndex(index) {
-    index = Math.max(0, Math.min(index, sections.length - 1));
-    currentIndex = index;
-    if (isScrolling) return;
+            wrapper.addEventListener('mouseup', () => {
+                isDragging = false;
+                wrapper.classList.remove('active');
+            });
 
-    isScrolling = true;
-    isKeyScrolling = true;
+            wrapper.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 2; // The '2' is a speed multiplier
+                wrapper.scrollLeft = scrollLeft - walk;
+            });
+        }
+    });
 
-    sections[index].scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+    // Full-page scroll navigation logic
+    const scrollContainer = document.querySelector('.scroll-container');
+    const sections = document.querySelectorAll('.section');
+    const dotsContainer = document.querySelector('.dots');
+    const dotLabel = document.getElementById('dot-label');
+    const navButtons = document.querySelectorAll('.scroll-nav-button');
+    let currentIndex = 0;
+    let isThrottled = false;
+    const throttleDelay = 1000;
 
-    setTimeout(() => {
-        updateDots();
-        updateArrows();
-        checkLinkedInVisibility();
-        isScrolling = false;
-        isKeyScrolling = false; // release lock after scroll finishes
-    }, 600);
-}
+    const updateActiveDot = () => {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('active');
+                dot.setAttribute('aria-current', 'true');
+            } else {
+                dot.classList.remove('active');
+                dot.removeAttribute('aria-current');
+            }
+        });
+    };
 
-function updateDots() {
-    dots.forEach(dot => dot.classList.remove('active'));
-    dots[currentIndex]?.classList.add('active');
-}
+    const scrollToSection = (index) => {
+        if (isThrottled || index < 0 || index >= sections.length) return;
+        isThrottled = true;
+        currentIndex = index;
+        const sectionOffset = sections[currentIndex].offsetLeft;
+        scrollContainer.scrollTo({
+            left: sectionOffset,
+            behavior: 'smooth'
+        });
 
-function updateArrows() {
-    leftArrow.classList.toggle('show', currentIndex > 0);
-    rightArrow.classList.toggle('show', currentIndex < sections.length - 1);
-}
+        updateActiveDot();
+        setTimeout(() => {
+            isThrottled = false;
+        }, throttleDelay);
+    };
 
-// Dot click
-dots.forEach(dot => dot.addEventListener('click', () => scrollToIndex(Number(dot.dataset.index))));
+    scrollContainer.addEventListener('scroll', () => {
+        const scrollPosition = scrollContainer.scrollLeft;
+        const visibleIndex = Math.round(scrollPosition / window.innerWidth);
+        if (visibleIndex !== currentIndex) {
+            currentIndex = visibleIndex;
+            updateActiveDot();
+        }
+        updateNavButtonVisibility();
+    });
 
-// Arrow click
-leftArrow.addEventListener('click', () => scrollToIndex(currentIndex - 1));
-rightArrow.addEventListener('click', () => scrollToIndex(currentIndex + 1));
+    dotsContainer.addEventListener('click', (e) => {
+        const dot = e.target.closest('.dot');
+        if (dot) {
+            const index = parseInt(dot.dataset.index);
+            scrollToSection(index);
+        }
+    });
 
-// ==========================
-// HORIZONTAL CARD SCROLL
-// ==========================
-function setupHorizontalScroll(listSelector, hoverKey) {
-    const list = document.querySelector(listSelector);
-    if (!list) return;
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.classList.contains('scroll-nav-left')) {
+                scrollToSection(currentIndex - 1);
+            } else if (button.classList.contains('scroll-nav-right')) {
+                scrollToSection(currentIndex + 1);
+            }
+        });
+    });
 
-    const cards = Array.from(list.querySelectorAll('.card-item'));
-    if (!cards.length) return;
+    const updateNavButtonVisibility = () => {
+        const leftBtn = document.querySelector('.scroll-nav-left');
+        const rightBtn = document.querySelector('.scroll-nav-right');
+        
+        if (currentIndex === 0) {
+            leftBtn.classList.add('hidden');
+        } else {
+            leftBtn.classList.remove('hidden');
+        }
 
-    // Track hover state
-    list.addEventListener('mouseenter', () => hoverState[hoverKey] = true);
-    list.addEventListener('mouseleave', () => hoverState[hoverKey] = false);
+        if (currentIndex === sections.length - 1) {
+            rightBtn.classList.add('hidden');
+        } else {
+            rightBtn.classList.remove('hidden');
+        }
+    };
 
-    const getCardScrollPos = card => {
-        const containerCenter = list.offsetWidth / 2;
-        const rect = card.getBoundingClientRect();
-        const listRect = list.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2 - listRect.left;
-        return list.scrollLeft + cardCenter - containerCenter;
-    };
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+            scrollToSection(currentIndex + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            scrollToSection(currentIndex - 1);
+        }
+    });
 
-    const scrollToCard = index => {
-        index = Math.max(0, Math.min(index, cards.length - 1));
-        list.scrollTo({ left: getCardScrollPos(cards[index]), behavior: 'smooth' });
-    };
+    // Initial setup
+    updateActiveDot();
+    updateNavButtonVisibility();
 
-    list.addEventListener('wheel', e => {
-        if (!cards.length) return;
-        e.stopPropagation();
-        e.preventDefault();
+    // Form submission
+    const contactForm = document.getElementById('contact-form');
+    const responseMessage = document.getElementById('response');
+    const linkedinButtonContainer = document.querySelector('.linkedin-button-container');
 
-        const containerCenter = list.offsetWidth / 2;
-        let closestIndex = 0;
-        let minDistance = Infinity;
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const object = Object.fromEntries(formData.entries());
+        const json = JSON.stringify(object);
 
-        cards.forEach((card, i) => {
-            const rect = card.getBoundingClientRect();
-            const listRect = list.getBoundingClientRect();
-            const cardCenter = rect.left + rect.width / 2 - listRect.left;
-            const distance = Math.abs(cardCenter - containerCenter);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = i;
-            }
-        });
+        responseMessage.textContent = "Sending your message...";
+        responseMessage.style.color = "#fff";
+        linkedinButtonContainer.classList.remove('visible');
 
-        if (e.deltaY > 0 && closestIndex < cards.length - 1) closestIndex++;
-        if (e.deltaY < 0 && closestIndex > 0) closestIndex--;
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            });
+            const data = await res.json();
 
-        scrollToCard(closestIndex);
-    }, { passive: false });
-
-    // Center first card
-    scrollToCard(0);
-}
-
-['portfolio', 'resources', 'services'].forEach(section =>
-    setupHorizontalScroll(`#${section}-section .card-list`, section)
-);
-
-// ==========================
-// VERTICAL SCROLL SNAP FOR MAIN SECTIONS
-// ==========================
-container.addEventListener('wheel', e => {
-    if (!Object.values(hoverState).some(v => v)) {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            e.preventDefault();
-            scrollToIndex(currentIndex + (e.deltaY > 0 ? 1 : -1));
-        }
-    }
-}, { passive: false });
-
-// ==========================
-// DOTS & ARROW UPDATE ON MANUAL SCROLL
-// ==========================
-container.addEventListener('scroll', () => {
-    if (!isKeyScrolling) { // <-- NEW: ignore scroll updates during key-based scroll
-        const newIndex = Math.round(container.scrollLeft / window.innerWidth);
-        if (newIndex !== currentIndex) {
-            currentIndex = newIndex;
-            updateDots();
-            updateArrows();
-        }
-        checkLinkedInVisibility();
-    }
+            if (data.success) {
+                responseMessage.textContent = "Thanks for your message! I'll be in touch soon.";
+                responseMessage.style.color = "var(--primary-yellow)";
+                form.reset();
+            } else {
+                responseMessage.textContent = "Oops! There was an error. Please try again or connect on LinkedIn.";
+                responseMessage.style.color = "red";
+                linkedinButtonContainer.classList.add('visible');
+            }
+        } catch (error) {
+            responseMessage.textContent = "Oops! An error occurred. Please check your connection and try again.";
+            responseMessage.style.color = "red";
+            linkedinButtonContainer.classList.add('visible');
+        }
+    });
 });
-
-// ==========================
-// LINKEDIN BUTTON VISIBILITY
-// ==========================
-function checkLinkedInVisibility() {
-    if (!linkedinButton) return;
-    const slide = document.querySelector('#contact-section');
-    const scrollCenter = container.scrollLeft + container.clientWidth / 2;
-    const slideLeft = slide.offsetLeft;
-    const slideRight = slideLeft + slide.offsetWidth;
-
-    if (scrollCenter >= slideLeft && scrollCenter <= slideRight) {
-        linkedinButton.classList.add('visible');
-        linkedinButton.classList.remove('fade-out');
-    } else if (linkedinButton.classList.contains('visible')) {
-        linkedinButton.classList.remove('visible');
-        linkedinButton.classList.add('fade-out');
-        linkedinButton.addEventListener('animationend', () => linkedinButton.classList.remove('fade-out'), { once: true });
-    }
-}
-
-container.addEventListener('scroll', checkLinkedInVisibility);
-window.addEventListener('resize', checkLinkedInVisibility);
-
-// ==========================
-// CONTACT FORM SUBMISSION
-// ==========================
-const form = document.getElementById('contact-form');
-const submitButton = form?.querySelector('button');
-const responseMsg = document.getElementById('response');
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwOBzqcLqHbpZXDQ2YhhV-zlCQmyn0znUEPqXYOvbT1-LFR8S7PoAVdP6pA9-LbodQ3/exec';
-
-if (form) {
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        submitButton.innerHTML = '<span class="spinner"></span> Sending...';
-        submitButton.disabled = true;
-
-        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-            .then(() => setTimeout(() => submitButton.textContent = "Message Sent!", 2000))
-            .catch(error => {
-                responseMsg.textContent = "Error submitting form. Please try again.";
-                submitButton.textContent = "Send";
-                submitButton.disabled = false;
-                console.error('Error!', error.message);
-            });
-    });
-}
-
-// ==========================
-// REMOVE DEFAULT SPACEBAR FUNCTION
-// ==========================
-let lastAction = 'right'; // default: move right
-let lastScrollLeft = container.scrollLeft; // track previous scroll position
-
-function doScroll(action) {
-    if (action === 'left') scrollToIndex(currentIndex - 1);
-    if (action === 'right') scrollToIndex(currentIndex + 1);
-}
-
-leftArrow.addEventListener('click', () => {
-    lastAction = 'left';
-    doScroll('left');
-});
-
-rightArrow.addEventListener('click', () => {
-    lastAction = 'right';
-    doScroll('right');
-});
-
-window.addEventListener('keydown', e => {
-    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-
-    if (e.code === 'ArrowLeft') {
-        e.preventDefault();
-        lastAction = 'left';
-        doScroll('left');
-    }
-
-    if (e.code === 'ArrowRight') {
-        e.preventDefault();
-        lastAction = 'right';
-        doScroll('right');
-    }
-
-    if (e.code === 'Space') {
-        e.preventDefault();
-        if (e.shiftKey) {
-            // Reverse the last action
-            doScroll(lastAction === 'left' ? 'right' : 'left');
-        } else {
-            // Repeat last action
-            doScroll(lastAction);
-        }
-    }
-});
-
-container.addEventListener('scroll', () => {
-    const delta = container.scrollLeft - lastScrollLeft;
-    if (Math.abs(delta) > 2) { // ignore tiny scroll jitters
-        lastAction = delta > 0 ? 'right' : 'left';
-        lastScrollLeft = container.scrollLeft;
-    }
-});
-
-// ==========================
-// INITIALIZE
-// ==========================
-updateDots();
-updateArrows();
-checkLinkedInVisibility();
