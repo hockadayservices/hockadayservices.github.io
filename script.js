@@ -1,179 +1,135 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ==========================
+    // GLOBAL SELECTORS
+    // ==========================
+    const container = document.querySelector('.scroll-container');
+    const sections = [...document.querySelectorAll('.section')];
+    const dots = [...document.querySelectorAll('.dot')];
+    const dotLabel = document.getElementById('dot-label');
+    const linkedinButton = document.querySelector('#contact-section .linkedin-button-container');
+    const leftArrow = document.querySelector('.scroll-nav-left');
+    const rightArrow = document.querySelector('.scroll-nav-right');
 
-    // Horizontal Carousel Logic
-    const carouselSections = ['portfolio-section', 'resources-section', 'services-section'];
+    let currentIndex = 0;
+    let isHoveringDot = false;
 
-    carouselSections.forEach(sectionId => {
-        const wrapper = document.getElementById(sectionId).querySelector('.card-list-wrapper');
-        let isDragging = false;
-        let startX;
-        let scrollLeft;
+    // ==========================
+    // SCROLL TO SECTION
+    // ==========================
+    const scrollToIndex = (index) => {
+        currentIndex = Math.max(0, Math.min(index, sections.length - 1));
+        sections[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+        updateActiveStates();
+    };
 
-        if (wrapper) {
-            wrapper.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                wrapper.classList.add('active');
-                startX = e.pageX - wrapper.offsetLeft;
-                scrollLeft = wrapper.scrollLeft;
-            });
+    // ==========================
+    // UPDATE UI STATES
+    // ==========================
+    const updateActiveStates = () => {
+        dots.forEach((dot, i) => {
+            const active = i === currentIndex;
+            dot.classList.toggle('active', active);
+            dot.setAttribute('aria-current', active ? 'true' : 'false');
+        });
 
-            wrapper.addEventListener('mouseleave', () => {
-                isDragging = false;
-                wrapper.classList.remove('active');
-            });
+        leftArrow.style.opacity = leftArrow.style.pointerEvents = currentIndex > 0 ? '1' : '0';
+        rightArrow.style.opacity = rightArrow.style.pointerEvents = currentIndex < sections.length - 1 ? '1' : '0';
 
-            wrapper.addEventListener('mouseup', () => {
-                isDragging = false;
-                wrapper.classList.remove('active');
-            });
+        updateDotLabel();
+        checkLinkedInVisibility();
+    };
 
-            wrapper.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                const x = e.pageX - wrapper.offsetLeft;
-                const walk = (x - startX) * 2; // The '2' is a speed multiplier
-                wrapper.scrollLeft = scrollLeft - walk;
-            });
-        }
-    });
+    const updateDotLabel = () => {
+        if (!isHoveringDot) {
+            dotLabel.textContent = sections[currentIndex].dataset.section || '';
+            dotLabel.classList.add('show');
+        }
+    };
 
-    // Full-page scroll navigation logic
-    const scrollContainer = document.querySelector('.scroll-container');
-    const sections = document.querySelectorAll('.section');
-    const dotsContainer = document.querySelector('.dots');
-    const dotLabel = document.getElementById('dot-label');
-    const navButtons = document.querySelectorAll('.scroll-nav-button');
-    let currentIndex = 0;
-    let isThrottled = false;
-    const throttleDelay = 1000;
+    // ==========================
+    // DOT INTERACTIONS
+    // ==========================
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => scrollToIndex(i));
+        dot.addEventListener('mouseenter', () => {
+            isHoveringDot = true;
+            dotLabel.textContent = dot.dataset.section;
+        });
+        dot.addEventListener('mouseleave', () => {
+            isHoveringDot = false;
+            updateDotLabel();
+        });
+    });
 
-    const updateActiveDot = () => {
-        const dots = document.querySelectorAll('.dot');
-        dots.forEach((dot, index) => {
-            if (index === currentIndex) {
-                dot.classList.add('active');
-                dot.setAttribute('aria-current', 'true');
-            } else {
-                dot.classList.remove('active');
-                dot.removeAttribute('aria-current');
-            }
-        });
-    };
+    // ==========================
+    // ARROWS
+    // ==========================
+    leftArrow.addEventListener('click', () => scrollToIndex(currentIndex - 1));
+    rightArrow.addEventListener('click', () => scrollToIndex(currentIndex + 1));
 
-    const scrollToSection = (index) => {
-        if (isThrottled || index < 0 || index >= sections.length) return;
-        isThrottled = true;
-        currentIndex = index;
-        const sectionOffset = sections[currentIndex].offsetLeft;
-        scrollContainer.scrollTo({
-            left: sectionOffset,
-            behavior: 'smooth'
-        });
+    // ==========================
+    // KEYBOARD NAVIGATION
+    // ==========================
+    window.addEventListener('keydown', (e) => {
+        if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+        if (['ArrowLeft'].includes(e.code)) scrollToIndex(currentIndex - 1);
+        if (['ArrowRight', 'Space'].includes(e.code)) scrollToIndex(currentIndex + 1);
+    });
 
-        updateActiveDot();
-        setTimeout(() => {
-            isThrottled = false;
-        }, throttleDelay);
-    };
+    // ==========================
+    // MAIN HORIZONTAL SCROLL (SNAP ONE SECTION)
+    // ==========================
+    let isScrolling = false; // throttle flag
 
-    scrollContainer.addEventListener('scroll', () => {
-        const scrollPosition = scrollContainer.scrollLeft;
-        const visibleIndex = Math.round(scrollPosition / window.innerWidth);
-        if (visibleIndex !== currentIndex) {
-            currentIndex = visibleIndex;
-            updateActiveDot();
-        }
-        updateNavButtonVisibility();
-    });
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (isScrolling) return;
 
-    dotsContainer.addEventListener('click', (e) => {
-        const dot = e.target.closest('.dot');
-        if (dot) {
-            const index = parseInt(dot.dataset.index);
-            scrollToSection(index);
-        }
-    });
+        const delta = e.deltaY > 0 ? 1 : -1;
+        const targetIndex = Math.max(0, Math.min(currentIndex + delta, sections.length - 1));
 
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (button.classList.contains('scroll-nav-left')) {
-                scrollToSection(currentIndex - 1);
-            } else if (button.classList.contains('scroll-nav-right')) {
-                scrollToSection(currentIndex + 1);
-            }
-        });
-    });
+        if (targetIndex !== currentIndex) {
+            isScrolling = true;
+            scrollToIndex(targetIndex);
 
-    const updateNavButtonVisibility = () => {
-        const leftBtn = document.querySelector('.scroll-nav-left');
-        const rightBtn = document.querySelector('.scroll-nav-right');
-        
-        if (currentIndex === 0) {
-            leftBtn.classList.add('hidden');
-        } else {
-            leftBtn.classList.remove('hidden');
-        }
+            // Release throttle after scroll finishes (approximate)
+            setTimeout(() => {
+                isScrolling = false;
+            }, 600); // match smooth scroll duration
+        }
+    }, { passive: false });
 
-        if (currentIndex === sections.length - 1) {
-            rightBtn.classList.add('hidden');
-        } else {
-            rightBtn.classList.remove('hidden');
-        }
-    };
+    // ==========================
+    // LINKEDIN BUTTON
+    // ==========================
+    const checkLinkedInVisibility = () => {
+        if (!linkedinButton) return;
+        const rect = document.getElementById('contact-section').getBoundingClientRect();
+        linkedinButton.classList.toggle('visible', rect.top < window.innerHeight && rect.bottom > 0);
+    };
+    window.addEventListener('scroll', checkLinkedInVisibility);
+    window.addEventListener('resize', checkLinkedInVisibility);
 
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-            scrollToSection(currentIndex + 1);
-        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-            scrollToSection(currentIndex - 1);
-        }
-    });
+    // ==========================
+    // HORIZONTAL CAROUSEL
+    // ==========================
+    document.querySelectorAll('.card-list-wrapper').forEach(carousel => {
+        const card = carousel.querySelector('.hover-card');
+        if (!card) return;
+        const gap = parseInt(getComputedStyle(carousel).gap) || 32;
 
-    // Initial setup
-    updateActiveDot();
-    updateNavButtonVisibility();
+        carousel.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            carousel.scrollBy({ left: (card.offsetWidth + gap) * (e.deltaY > 0 ? 1 : -1), behavior: 'smooth' });
+        }, { passive: false });
+    });
 
-    // Form submission
-    const contactForm = document.getElementById('contact-form');
-    const responseMessage = document.getElementById('response');
-    const linkedinButtonContainer = document.querySelector('.linkedin-button-container');
-
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        const object = Object.fromEntries(formData.entries());
-        const json = JSON.stringify(object);
-
-        responseMessage.textContent = "Sending your message...";
-        responseMessage.style.color = "#fff";
-        linkedinButtonContainer.classList.remove('visible');
-
-        try {
-            const res = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: json
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                responseMessage.textContent = "Thanks for your message! I'll be in touch soon.";
-                responseMessage.style.color = "var(--primary-yellow)";
-                form.reset();
-            } else {
-                responseMessage.textContent = "Oops! There was an error. Please try again or connect on LinkedIn.";
-                responseMessage.style.color = "red";
-                linkedinButtonContainer.classList.add('visible');
-            }
-        } catch (error) {
-            responseMessage.textContent = "Oops! An error occurred. Please check your connection and try again.";
-            responseMessage.style.color = "red";
-            linkedinButtonContainer.classList.add('visible');
-        }
-    });
+    // ==========================
+    // INITIALIZE
+    // ==========================
+    window.addEventListener('load', () => {
+        updateActiveStates();
+        updateDotLabel();
+        checkLinkedInVisibility();
+    });
 });
