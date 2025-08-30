@@ -1,106 +1,166 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ==========================
-    // GLOBAL SELECTORS
-    // ==========================
-    const container = document.querySelector('.scroll-container');
-    const sections = [...document.querySelectorAll('.section')];
-    const dots = [...document.querySelectorAll('.dot')];
-    const dotLabel = document.getElementById('dot-label');
-    const linkedinButton = document.querySelector('#contact-section .linkedin-button-container');
-    const leftArrow = document.querySelector('.scroll-nav-left');
-    const rightArrow = document.querySelector('.scroll-nav-right');
+const container = document.querySelector('.scroll-container');
+const sections = [...document.querySelectorAll('.section')];
+const dots = [...document.querySelectorAll('.dot')];
+const dotsContainer = document.querySelector('.dots-container');
+const dotLabel = document.getElementById('dot-label');
+const linkedinButton = document.querySelector('#contact-section .linkedin-button-container');
+const leftArrow = document.querySelector('.scroll-nav-left');
+const rightArrow = document.querySelector('.scroll-nav-right');
 
-    let currentIndex = 0;
-    let isHoveringDot = false;
+let currentIndex = 0;
+let isScrolling = false;
+let lastDirection = 1;
+let isHoveringDot = false;
 
     // ==========================
     // SCROLL TO SECTION
     // ==========================
-    const scrollToIndex = (index) => {
+    const scrollToIndex = (index, direction = 1) => {
         currentIndex = Math.max(0, Math.min(index, sections.length - 1));
-        sections[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+        lastDirection = direction;
+
+        sections[currentIndex].scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'start'
+        });
+
         updateActiveStates();
     };
 
     // ==========================
-    // UPDATE UI STATES
+    // UPDATE DOTS AND ARROWS
     // ==========================
     const updateActiveStates = () => {
+        const oldIndex = dots.findIndex(dot => dot.classList.contains('active'));
+
         dots.forEach((dot, i) => {
-            const active = i === currentIndex;
-            dot.classList.toggle('active', active);
-            dot.setAttribute('aria-current', active ? 'true' : 'false');
+            dot.classList.remove('active', 'drop', 'active-rise');
+
+            if (i === currentIndex) {
+                if (oldIndex !== -1 && oldIndex !== currentIndex) {
+                    // Delay the rise slightly so it overlaps the drop return
+                    setTimeout(() => {
+                        dot.classList.add('active-rise');
+                        setTimeout(() => {
+                            dot.classList.remove('active-rise');
+                            dot.classList.add('active');
+                        }, 300); // match animation duration
+                    }, 150); // stagger delay (slight overlap, not full wait)
+                } else {
+                    dot.classList.add('active');
+                }
+            } else if (i === oldIndex) {
+                dot.classList.add('drop');
+                setTimeout(() => {
+                    dot.classList.remove('drop');
+                }, 300); // clean up after animation
+            }
         });
 
-        leftArrow.style.opacity = leftArrow.style.pointerEvents = currentIndex > 0 ? '1' : '0';
-        rightArrow.style.opacity = rightArrow.style.pointerEvents = currentIndex < sections.length - 1 ? '1' : '0';
+        // Show/hide arrows
+        leftArrow.style.opacity = currentIndex > 0 ? '1' : '0';
+        leftArrow.style.pointerEvents = currentIndex > 0 ? 'auto' : 'none';
+        rightArrow.style.opacity = currentIndex < sections.length - 1 ? '1' : '0';
+        rightArrow.style.pointerEvents = currentIndex < sections.length - 1 ? 'auto' : 'none';
 
-        updateDotLabel();
+        if (!isHoveringDot) updateDotLabel();
         checkLinkedInVisibility();
     };
 
-    const updateDotLabel = () => {
-        if (!isHoveringDot) {
-            dotLabel.textContent = sections[currentIndex].dataset.section || '';
-            dotLabel.classList.add('show');
-        }
+// ==========================
+// DOT CLICK HANDLER
+// ==========================
+dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        // Scroll to the section corresponding to the clicked dot
+        scrollToIndex(index, lastDirection);
+    });
+});
+
+// ==========================
+// DOT LABEL
+// ==========================
+const updateDotLabelPosition = () => {
+    const rect = dotsContainer.getBoundingClientRect();
+    dotLabel.style.left = `calc(${rect.left}px - 11.75vw)`;
+};
+
+// Call this whenever you update the label
+const updateDotLabel = () => {
+    const sectionName = sections[currentIndex].dataset.section || '';
+    dotLabel.textContent = sectionName;
+    dotLabel.classList.add('visible');
+    updateDotLabelPosition();
+};
+
+// Update on hover as well
+dots.forEach((dot, i) => {
+    dot.addEventListener('mouseenter', () => {
+        isHoveringDot = true;
+        dotLabel.textContent = dot.dataset.section;
+        dotLabel.classList.add('visible');
+        updateDotLabelPosition();
+    });
+    dot.addEventListener('mouseleave', () => {
+        isHoveringDot = false;
+        updateDotLabel();
+    });
+});
+
+// Also reposition on window resize
+window.addEventListener('resize', updateDotLabelPosition);
+
+
+    // ==========================
+    // ARROW BUTTONS
+    // ==========================
+    const arrowClick = (direction) => {
+        if (isScrolling) return;
+        isScrolling = true;
+        scrollToIndex(currentIndex + direction, direction);
+        setTimeout(() => { isScrolling = false; }, 600);
     };
 
-    // ==========================
-    // DOT INTERACTIONS
-    // ==========================
-    dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => scrollToIndex(i));
-        dot.addEventListener('mouseenter', () => {
-            isHoveringDot = true;
-            dotLabel.textContent = dot.dataset.section;
-        });
-        dot.addEventListener('mouseleave', () => {
-            isHoveringDot = false;
-            updateDotLabel();
-        });
-    });
-
-    // ==========================
-    // ARROWS
-    // ==========================
-    leftArrow.addEventListener('click', () => scrollToIndex(currentIndex - 1));
-    rightArrow.addEventListener('click', () => scrollToIndex(currentIndex + 1));
+    leftArrow.addEventListener('click', () => arrowClick(-1));
+    rightArrow.addEventListener('click', () => arrowClick(1));
 
     // ==========================
     // KEYBOARD NAVIGATION
     // ==========================
     window.addEventListener('keydown', (e) => {
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-        if (['ArrowLeft'].includes(e.code)) scrollToIndex(currentIndex - 1);
-        if (['ArrowRight', 'Space'].includes(e.code)) scrollToIndex(currentIndex + 1);
+        if (isScrolling) return;
+
+        let direction = 0;
+        if (e.code === 'ArrowLeft') direction = -1;
+        if (e.code === 'ArrowRight') direction = 1;
+        if (e.code === 'Space' || e.code === 'Spacebar') direction = lastDirection;
+
+        if (direction === 0) return;
+
+        e.preventDefault();
+        arrowClick(direction);
     });
 
     // ==========================
-    // MAIN HORIZONTAL SCROLL (SNAP ONE SECTION)
+    // MOUSE WHEEL NAVIGATION
     // ==========================
-    let isScrolling = false; // throttle flag
-
     container.addEventListener('wheel', (e) => {
         e.preventDefault();
         if (isScrolling) return;
 
         const delta = e.deltaY > 0 ? 1 : -1;
-        const targetIndex = Math.max(0, Math.min(currentIndex + delta, sections.length - 1));
+        if ((currentIndex === 0 && delta < 0) || (currentIndex === sections.length - 1 && delta > 0)) return;
 
-        if (targetIndex !== currentIndex) {
-            isScrolling = true;
-            scrollToIndex(targetIndex);
-
-            // Release throttle after scroll finishes (approximate)
-            setTimeout(() => {
-                isScrolling = false;
-            }, 600); // match smooth scroll duration
-        }
+        isScrolling = true;
+        scrollToIndex(currentIndex + delta, delta);
+        setTimeout(() => { isScrolling = false; }, 600);
     }, { passive: false });
 
     // ==========================
-    // LINKEDIN BUTTON
+    // LINKEDIN BUTTON VISIBILITY
     // ==========================
     const checkLinkedInVisibility = () => {
         if (!linkedinButton) return;
@@ -109,20 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('scroll', checkLinkedInVisibility);
     window.addEventListener('resize', checkLinkedInVisibility);
-
-    // ==========================
-    // HORIZONTAL CAROUSEL
-    // ==========================
-    document.querySelectorAll('.card-list-wrapper').forEach(carousel => {
-        const card = carousel.querySelector('.hover-card');
-        if (!card) return;
-        const gap = parseInt(getComputedStyle(carousel).gap) || 32;
-
-        carousel.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            carousel.scrollBy({ left: (card.offsetWidth + gap) * (e.deltaY > 0 ? 1 : -1), behavior: 'smooth' });
-        }, { passive: false });
-    });
 
     // ==========================
     // INITIALIZE
