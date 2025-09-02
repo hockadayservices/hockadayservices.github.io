@@ -1,181 +1,181 @@
 document.addEventListener('DOMContentLoaded', () => {
-const container = document.querySelector('.scroll-container');
-const sections = [...document.querySelectorAll('.section')];
-const dots = [...document.querySelectorAll('.dot')];
-const dotsContainer = document.querySelector('.dots-container');
-const dotLabel = document.getElementById('dot-label');
-const linkedinButton = document.querySelector('#contact-section .linkedin-button-container');
-const leftArrow = document.querySelector('.scroll-nav-left');
-const rightArrow = document.querySelector('.scroll-nav-right');
+    // ------------------------------
+    // DOM Cache
+    // ------------------------------
+    const DOM = {
+        sections: [...document.querySelectorAll('.section')],
+        dotsContainer: document.querySelector('.dots-container'),
+        dotLabel: document.querySelector('.dot-label'),
+        leftArrow: document.querySelector('.scroll-nav-button.left'),
+        rightArrow: document.querySelector('.scroll-nav-button.right'),
+        contactForm: document.getElementById('contactForm'),
+        formResponse: document.getElementById('formResponse'),
+    };
+    DOM.dots = [...DOM.dotsContainer.querySelectorAll('.dot')];
+    DOM.submitButton = DOM.contactForm?.querySelector('button');
 
-let currentIndex = 0;
-let isScrolling = false;
-let lastDirection = 1;
-let isHoveringDot = false;
+    let currentIndex = 0;
+    let isScrolling = false;
+    let lastDirection = 1;
+    const SCROLL_DELAY = 700;
+    let dotLabelTimeout;
 
-    // ==========================
-    // SCROLL TO SECTION
-    // ==========================
-    const scrollToIndex = (index, direction = 1) => {
-        currentIndex = Math.max(0, Math.min(index, sections.length - 1));
-        lastDirection = direction;
-
-        sections[currentIndex].scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'start'
-        });
-
-        updateActiveStates();
+    // ------------------------------
+    // Helpers
+    // ------------------------------
+    const lockScroll = (delay = SCROLL_DELAY) => {
+        isScrolling = true;
+        setTimeout(() => (isScrolling = false), delay);
     };
 
-    // ==========================
-    // UPDATE DOTS AND ARROWS
-    // ==========================
+    const showResponse = (message, duration = 5000) => {
+        if (!DOM.formResponse) return;
+        DOM.formResponse.innerText = message;
+        DOM.formResponse.classList.add('visible');
+        setTimeout(() => DOM.formResponse.classList.remove('visible'), duration);
+    };
+
+    const updateDotLabel = (fade = true) => {
+        if (!DOM.dotLabel) return;
+        DOM.dotLabel.textContent = DOM.sections[currentIndex].dataset.section || '';
+        if (fade) {
+            DOM.dotLabel.classList.add('visible');
+            clearTimeout(DOM.dotLabel._timeout);
+            DOM.dotLabel._timeout = setTimeout(() => {
+                DOM.dotLabel.classList.remove('visible');
+            }, 2000);
+        }
+    };
+
     const updateActiveStates = () => {
-        const oldIndex = dots.findIndex(dot => dot.classList.contains('active'));
+        DOM.dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+            dot.setAttribute('aria-pressed', i === currentIndex);
+        });
 
-        dots.forEach((dot, i) => {
-            dot.classList.remove('active', 'drop', 'active-rise');
+        if (DOM.leftArrow) {
+            DOM.leftArrow.style.opacity = currentIndex > 0 ? '1' : '0';
+            DOM.leftArrow.style.pointerEvents = currentIndex > 0 ? 'auto' : 'none';
+        }
+        if (DOM.rightArrow) {
+            DOM.rightArrow.style.opacity = currentIndex < DOM.sections.length - 1 ? '1' : '0';
+            DOM.rightArrow.style.pointerEvents = currentIndex < DOM.sections.length - 1 ? 'auto' : 'none';
+        }
 
-            if (i === currentIndex) {
-                if (oldIndex !== -1 && oldIndex !== currentIndex) {
-                    // Delay the rise slightly so it overlaps the drop return
-                    setTimeout(() => {
-                        dot.classList.add('active-rise');
-                        setTimeout(() => {
-                            dot.classList.remove('active-rise');
-                            dot.classList.add('active');
-                        }, 300); // match animation duration
-                    }, 150); // stagger delay (slight overlap, not full wait)
-                } else {
-                    dot.classList.add('active');
+        updateDotLabel();
+    };
+
+    // ------------------------------
+    // Smooth Scroll
+    // ------------------------------
+    const scrollToIndex = (index, direction = null) => {
+        if (isScrolling) return;
+        currentIndex = Math.max(0, Math.min(index, DOM.sections.length - 1));
+        if (direction !== null) lastDirection = direction;
+
+        DOM.sections[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        lockScroll();
+        setTimeout(updateActiveStates, SCROLL_DELAY - 50);
+    };
+
+    const safeScroll = (index, dir) => !isScrolling && scrollToIndex(index, dir);
+
+    // ------------------------------
+    // Dot Navigation & Hover
+    // ------------------------------
+    DOM.dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => safeScroll(i, i > currentIndex ? 1 : -1));
+
+        dot.addEventListener('mouseenter', () => {
+            if (!DOM.dotLabel) return;
+            clearTimeout(dotLabelTimeout);
+            DOM.dotLabel.textContent = dot.dataset.section || '';
+            DOM.dotLabel.classList.add('visible');
+        });
+
+        dot.addEventListener('mouseleave', () => {
+            if (!DOM.dotLabel) return;
+            dotLabelTimeout = setTimeout(() => {
+                DOM.dotLabel.textContent = DOM.sections[currentIndex].dataset.section || '';
+                DOM.dotLabel.classList.remove('visible');
+            }, 300);
+        });
+    });
+
+    // ------------------------------
+    // Arrow & Keyboard Navigation
+    // ------------------------------
+    DOM.leftArrow?.addEventListener('click', () => safeScroll(currentIndex - 1, -1));
+    DOM.rightArrow?.addEventListener('click', () => safeScroll(currentIndex + 1, 1));
+
+    window.addEventListener('keydown', (e) => {
+        if (isScrolling) return;
+        if (['input','textarea'].includes(e.target.tagName.toLowerCase())) return;
+
+        const keyMap = {
+            ArrowRight: 1, ArrowDown: 1,
+            ArrowLeft: -1, ArrowUp: -1,
+            ' ': lastDirection
+        };
+        if (e.key in keyMap) {
+            safeScroll(currentIndex + keyMap[e.key], keyMap[e.key]);
+            e.preventDefault();
+        }
+    });
+
+    // ------------------------------
+    // Mouse Wheel Navigation
+    // ------------------------------
+    window.addEventListener('wheel', (e) => {
+        if (isScrolling) return;
+        const delta = e.deltaY > 0 ? 1 : -1;
+        safeScroll(currentIndex + delta, delta);
+        lockScroll();
+    });
+
+    // ------------------------------
+    // Intersection Observer
+    // ------------------------------
+    const observer = new IntersectionObserver((entries) => {
+        if (isScrolling) return;
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const newIndex = DOM.sections.indexOf(entry.target);
+                if (newIndex !== currentIndex) {
+                    currentIndex = newIndex;
+                    updateActiveStates();
                 }
-            } else if (i === oldIndex) {
-                dot.classList.add('drop');
-                setTimeout(() => {
-                    dot.classList.remove('drop');
-                }, 300); // clean up after animation
             }
         });
+    }, { threshold: 0.5 });
 
-        // Show/hide arrows
-        leftArrow.style.opacity = currentIndex > 0 ? '1' : '0';
-        leftArrow.style.pointerEvents = currentIndex > 0 ? 'auto' : 'none';
-        rightArrow.style.opacity = currentIndex < sections.length - 1 ? '1' : '0';
-        rightArrow.style.pointerEvents = currentIndex < sections.length - 1 ? 'auto' : 'none';
+    DOM.sections.forEach((section) => observer.observe(section));
 
-        if (!isHoveringDot) updateDotLabel();
-        checkLinkedInVisibility();
-    };
+    // ------------------------------
+    // Form Submission
+    // ------------------------------
+    if (DOM.contactForm && DOM.formResponse && DOM.submitButton) {
+        DOM.contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            DOM.submitButton.disabled = true;
+            const formData = new FormData(DOM.contactForm);
+            const scriptURL = 'https://script.google.com/macros/s/.../exec';
 
-// ==========================
-// DOT CLICK HANDLER
-// ==========================
-dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-        // Scroll to the section corresponding to the clicked dot
-        scrollToIndex(index, lastDirection);
-    });
-});
+            try {
+                await fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' });
+                DOM.contactForm.reset();
+                showResponse('Thanks you kindly, bucko! Your message has been received.', 10000);
+            } catch {
+                showResponse('❌ Error sending message.', 10000);
+            } finally {
+                DOM.submitButton.disabled = false;
+            }
+        });
+    }
 
-// ==========================
-// DOT LABEL
-// ==========================
-const updateDotLabelPosition = () => {
-    const rect = dotsContainer.getBoundingClientRect();
-    dotLabel.style.left = `calc(${rect.left}px - 11.75vw)`;
-};
-
-// Call this whenever you update the label
-const updateDotLabel = () => {
-    const sectionName = sections[currentIndex].dataset.section || '';
-    dotLabel.textContent = sectionName;
-    dotLabel.classList.add('visible');
-    updateDotLabelPosition();
-};
-
-// Update on hover as well
-dots.forEach((dot, i) => {
-    dot.addEventListener('mouseenter', () => {
-        isHoveringDot = true;
-        dotLabel.textContent = dot.dataset.section;
-        dotLabel.classList.add('visible');
-        updateDotLabelPosition();
-    });
-    dot.addEventListener('mouseleave', () => {
-        isHoveringDot = false;
-        updateDotLabel();
-    });
-});
-
-// Also reposition on window resize
-window.addEventListener('resize', updateDotLabelPosition);
-
-
-    // ==========================
-    // ARROW BUTTONS
-    // ==========================
-    const arrowClick = (direction) => {
-        if (isScrolling) return;
-        isScrolling = true;
-        scrollToIndex(currentIndex + direction, direction);
-        setTimeout(() => { isScrolling = false; }, 600);
-    };
-
-    leftArrow.addEventListener('click', () => arrowClick(-1));
-    rightArrow.addEventListener('click', () => arrowClick(1));
-
-    // ==========================
-    // KEYBOARD NAVIGATION
-    // ==========================
-    window.addEventListener('keydown', (e) => {
-        if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-        if (isScrolling) return;
-
-        let direction = 0;
-        if (e.code === 'ArrowLeft') direction = -1;
-        if (e.code === 'ArrowRight') direction = 1;
-        if (e.code === 'Space' || e.code === 'Spacebar') direction = lastDirection;
-
-        if (direction === 0) return;
-
-        e.preventDefault();
-        arrowClick(direction);
-    });
-
-    // ==========================
-    // MOUSE WHEEL NAVIGATION
-    // ==========================
-    container.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        if (isScrolling) return;
-
-        const delta = e.deltaY > 0 ? 1 : -1;
-        if ((currentIndex === 0 && delta < 0) || (currentIndex === sections.length - 1 && delta > 0)) return;
-
-        isScrolling = true;
-        scrollToIndex(currentIndex + delta, delta);
-        setTimeout(() => { isScrolling = false; }, 600);
-    }, { passive: false });
-
-    // ==========================
-    // LINKEDIN BUTTON VISIBILITY
-    // ==========================
-    const checkLinkedInVisibility = () => {
-        if (!linkedinButton) return;
-        const rect = document.getElementById('contact-section').getBoundingClientRect();
-        linkedinButton.classList.toggle('visible', rect.top < window.innerHeight && rect.bottom > 0);
-    };
-    window.addEventListener('scroll', checkLinkedInVisibility);
-    window.addEventListener('resize', checkLinkedInVisibility);
-
-    // ==========================
-    // INITIALIZE
-    // ==========================
-    window.addEventListener('load', () => {
-        updateActiveStates();
-        updateDotLabel();
-        checkLinkedInVisibility();
-    });
+    // ------------------------------
+    // Initialize
+    // ------------------------------
+    updateActiveStates();
 });
