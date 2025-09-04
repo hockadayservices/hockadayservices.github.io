@@ -4,14 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------------------
     const DOM = {
         sections: [...document.querySelectorAll('.section')],
-        dotsContainer: document.querySelector('.dots-container'),
-        dotLabel: document.querySelector('.dot-label'),
-        leftArrow: document.querySelector('.scroll-nav-button.left'),
-        rightArrow: document.querySelector('.scroll-nav-button.right'),
+        dotsContainer: document.querySelector('.site-footer__dots'),
+        dotLabel: document.querySelector('.site-footer__dot-label'),
+        leftArrow: document.querySelector('.scroll-nav-button--left'),
+        rightArrow: document.querySelector('.scroll-nav-button--right'),
         contactForm: document.getElementById('contactForm'),
         formResponse: document.getElementById('formResponse'),
     };
-    DOM.dots = [...DOM.dotsContainer.querySelectorAll('.dot')];
+    DOM.dots = [...DOM.dotsContainer.querySelectorAll('.site-footer__dot')];
     DOM.submitButton = DOM.contactForm?.querySelector('button');
 
     let currentIndex = 0;
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const showResponse = (message, duration = 5000) => {
         if (!DOM.formResponse) return;
         DOM.formResponse.innerText = message;
-        DOM.formResponse.classList.add('visible');
-        setTimeout(() => DOM.formResponse.classList.remove('visible'), duration);
+        DOM.formResponse.classList.add('form-response--visible'); // ✅ no dot
+        setTimeout(() => DOM.formResponse.classList.remove('form-response--visible'), duration);
     };
 
     const updateDotLabel = (fade = true) => {
