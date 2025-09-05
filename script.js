@@ -158,18 +158,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (DOM.contactForm && DOM.formResponse && DOM.submitButton) {
         DOM.contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
             DOM.submitButton.disabled = true;
+            DOM.submitButton.textContent = 'Sending...';
+
             const formData = new FormData(DOM.contactForm);
-            const scriptURL = 'https://script.google.com/macros/s/.../exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwAp29YU2881tZ2A6oj5XAFe97BWbW9lnNzRK39JY7rlGdiBTzueX-OCCNwoDeN5KY/exec';
 
             try {
-                await fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' });
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                });
+
                 DOM.contactForm.reset();
-                showResponse('Thanks you kindly, bucko! Your message has been received.', 10000);
-            } catch {
-                showResponse('❌ Error sending message.', 10000);
+                showResponse('Thank you, bucko! You can expect a response within 48 hours.', 10000);
+            } catch (error) {
+                console.error('Form submission error:', error);
+                showResponse('❌ Oops! There was an error sending your message.', 10000);
             } finally {
                 DOM.submitButton.disabled = false;
+                DOM.submitButton.textContent = 'Submit';
             }
         });
     }
